@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 
 const Login = (props) => {
   return <p>Login</p>
