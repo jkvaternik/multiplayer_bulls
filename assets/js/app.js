@@ -20,55 +20,32 @@ import { ch_join, ch_push, ch_reset } from './socket';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import Guesses from './components/Guesses';
-import Message from './components/Message';
-import Controls from './components/Controls';
+import Login from './containers/Login';
+import Setup from "./containers/Bulls/Setup";
+import Bulls from "./containers/Bulls/Bulls";
 
 function App(_) {
 
   const [state, setState] = useState({
-    bulls: [],
-    guesses: [],
-    gameOver: null,
-    message: null,
-    player: null,
+    gameName: null,
+    userName: null,
+    gameReady: null,
+    game: {
+      player: null,
+      bulls: [],
+      guesses: [],
+      gameOver: null,
+      message: null,
+    },
   });
-
-  useEffect(() => {
-    ch_join(setState)
-  });
-
-  function makeGuess(guess) {
-    ch_push(guess)
-  }
-
-  function newGameHandler() {
-    ch_reset()
-    setError({
-      hasError: false,
-      errorMessage: 'Guess is not four unique digits.'
-    })
-  }
 
   return (
-    <section className="game">
-      {state.message || state.gameOver ?
-        (state.gameOver ?
-          <Message message={state.gameOver} /> :
-          <Message message={state.message} />) :
-        null}
-      <h2 style={{ margin: "2.0rem 0" }}>4digits</h2>
-      <button onClick={newGameHandler}>New Game</button>
-      <div style={{ float: 'clear' }}>
-        <p>
-          Welcome to 4digits! A random sequence of 4 unique digits is generated for you to guess. If the matching digits are in their right positions, they are "bulls" (As), if in different positions, they are "cows" (Bs). You have 8 attempts to guess the number. Good luck!
-        </p>
-        { state.player ? <Controls
-          guessed={makeGuess} /> : null}
-        <Guesses guesses={{ guesses: state.guesses, bulls: state.bulls }} />
-      </div>
+    <section>
+      {!(gameName && userName) ?
+        <Login /> : <Setup />}
+      {gameReady ? <Bulls game={state.game} /> : null}
     </section>
-  );
+  )
 }
 
 ReactDOM.render(

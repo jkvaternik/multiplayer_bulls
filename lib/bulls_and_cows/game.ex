@@ -29,8 +29,12 @@ defmodule Bulls_and_Cows.Game do
   end
 
   def valid?(number) do
+    ## Pulled/modified from Olivia's hw05 code
+    digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
     number
     |> String.split("", trim: true)
+    |> Enum.filter(fn dd -> Enum.member?(digits, dd) end)
     |> MapSet.new()
     |> MapSet.size() === 4
   end
