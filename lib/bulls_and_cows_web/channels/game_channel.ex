@@ -5,6 +5,10 @@ defmodule BullsAndCowsWeb.GameChannel do
   alias BullsAndCows.GameServer
 
   @impl true
+  def join("game:lobby", _message, socket) do
+    {:ok, socket}
+  end
+
   def join("game:" <> name, payload, socket) do
     if authorized?(payload) do
       GameServer.start(name)

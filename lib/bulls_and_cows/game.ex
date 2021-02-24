@@ -2,6 +2,7 @@ defmodule BullsAndCows.Game do
   def new do
     %{
       secret: random_secret(),
+      users: [],
       bulls: [],
       guesses: [],
       gameOver?: false,
@@ -26,6 +27,10 @@ defmodule BullsAndCows.Game do
         length - 1
       )
     end
+  end
+
+  def login(st, user) do
+    %{st | users: st.users ++ [%{name: user, player?: false, ready?: false}]}
   end
 
   def valid?(number) do
@@ -98,6 +103,7 @@ defmodule BullsAndCows.Game do
         cond do
           List.last(st.bulls) === "A4B0" ->
             %{
+              users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You win! :)",
@@ -106,6 +112,7 @@ defmodule BullsAndCows.Game do
 
           length(st.guesses) === 8 ->
             %{
+              users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You lose :(",
@@ -115,6 +122,7 @@ defmodule BullsAndCows.Game do
 
       st.error? ->
         %{
+          users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
           message: "Guess is not four unique digits. Please try again.",
@@ -123,6 +131,7 @@ defmodule BullsAndCows.Game do
 
       true ->
         %{
+          users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
           message: nil,

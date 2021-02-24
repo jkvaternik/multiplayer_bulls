@@ -57,27 +57,29 @@ function App(_) {
   }
 
   function loginHandler(username, gameName) {
-    ch_login(username)
+    ch_login(username, gameName)
   }
 
   let body = null;
 
   if (!(state.user)) {
-    body = <Login login={loginHandler}/>
+    body = <Login login={loginHandler} />
   }
   else {
     // if (!state.gameReady) {
     //   body = <Setup />
     // }
     // else {
-      body = <div>
+    body = (
+      <div>
         <p>Welcome {state.user}</p>
-        <Bulls game={state} guessed={makeGuess} newGame={newGameHandler}/>
-        </div>
+        <Bulls game={state} guessed={makeGuess} newGame={newGameHandler} />
+      </div>
+    )
     // }
   }
 
-  let body = <Setup state={state}/>
+  // let body = <Setup state={state}/>
 
   return body
 }
