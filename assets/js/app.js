@@ -38,20 +38,23 @@ function App(_) {
       message: null,
     },
   });
-
+/*
   let body = null;
 
-  if (!(gameName && username)) {
+  if (!(state.gameName && state.username)) {
     body = <Login />
   }
   else {
-    if (!gameReady) {
+    if (!state.gameReady) {
       body = <Setup />
     }
     else {
       body = <Bulls game={state.game} />
     }
   }
+*/
+
+  let body = <Setup state={state}/>
 
   return (
     <section>

@@ -1,10 +1,10 @@
-import { ch_join, ch_push, ch_reset } from './socket';
+import { ch_join, ch_push, ch_reset } from '../../socket';
 
 import React, { useEffect, useState } from 'react';
 
-import Guesses from './components/Guesses';
-import Message from './components/Message';
-import Controls from './components/Controls';
+import Guesses from '../../components/Guesses';
+import Message from '../../components/Message';
+import Controls from '../../components/Controls';
 
 const Bulls = (props) => {
   useEffect(() => {
