@@ -16,6 +16,7 @@ defmodule BullsAndCows.Application do
       # Start a worker by calling: BullsAndCows.Worker.start_link(arg)
       # {BullsAndCows.Worker, arg}
       BullsAndCows.BackupAgent,
+      BullsAndCows.GameSup,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

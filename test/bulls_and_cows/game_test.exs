@@ -1,5 +1,5 @@
-defmodule Bulls_and_Cows.GameTest do
+defmodule BullsAndCows.GameTest do
   use ExUnit.Case
-  import Bulls_and_Cows.Game
+  import BullsAndCows.Game
 
 end
