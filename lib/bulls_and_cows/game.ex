@@ -36,6 +36,10 @@ defmodule BullsAndCows.Game do
     end
   end
 
+  def login(st, user) do
+    %{st | users: st.users ++ [%{name: user, player?: false, ready?: false}]}
+  end
+
   def valid?(number) do
     ## Pulled/modified from Olivia's hw05 code
     digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -106,6 +110,7 @@ defmodule BullsAndCows.Game do
         cond do
           List.last(st.bulls) === "A4B0" ->
             %{
+              users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You win! :)",
@@ -114,6 +119,7 @@ defmodule BullsAndCows.Game do
 
           length(st.guesses) === 8 ->
             %{
+              users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You lose :(",
@@ -123,6 +129,7 @@ defmodule BullsAndCows.Game do
 
       st.error? ->
         %{
+          users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
           message: "Guess is not four unique digits. Please try again.",
@@ -131,6 +138,7 @@ defmodule BullsAndCows.Game do
 
       true ->
         %{
+          users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
           message: nil,
