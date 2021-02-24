@@ -49,6 +49,14 @@ defmodule BullsAndCowsWeb.GameChannel do
     {:reply, {:ok, view}, socket}
   end
 
+  def handle_in("ready", newUser, socket) do 
+    user = socket.assigns[:user]
+    view = socket.assigns[:name]
+    |> GameServer.ready(newUser)
+    |> Game.view(user)
+    {:reply, {:ok, view}, socket}
+  end
+
   intercept ["view"]
 
   @impl true

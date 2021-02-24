@@ -39,6 +39,10 @@ defmodule BullsAndCows.GameServer do
     GenServer.call(reg(name), {:peek, name})
   end
 
+  def ready(name) do 
+    GenServer.call(reg(name), {:ready, name})
+  end
+
   # implementation
 
   def init(game) do
@@ -60,4 +64,8 @@ defmodule BullsAndCows.GameServer do
   def handle_call({:peek, _name}, _from, game) do
     {:reply, game, game}
   end
+
+  def handle_call({:ready, name}, _from, game) do 
+    game = Game.ready(game, name)
+    {:reply, game, game}
 end

@@ -11,7 +11,7 @@ socket.connect()
 let channel = socket.channel("game:1", {});
 
 let state = {
-  user: null,
+  user: [],
   bulls: [],
   guesses: [],
   gameOver: '',
@@ -47,6 +47,14 @@ export function ch_push(guess) {
     .receive("error", resp => {
       console.log("Unable to push", resp)
     });
+}
+
+export function ch_ready(userName) {
+  channel.push("ready", userName)
+  .receive("ok", state_update)
+  .receive("error", resp => {
+    console.log("Unable to push", resp)
+  });
 }
 
 export function ch_reset() {

@@ -2,11 +2,19 @@ defmodule BullsAndCows.Game do
   def new do
     %{
       secret: random_secret(),
+      users: [],
       bulls: [],
       guesses: [],
       gameOver?: false,
       error?: false
+      ready?: false
     }
+  end
+
+  def ready(st, name) do 
+    # Where user has name "name", set player to ready and player to true
+    user = Enum.filter(st.users, fn user => user.name == name) end)
+    IO.puts(user)
   end
 
   def random_secret() do

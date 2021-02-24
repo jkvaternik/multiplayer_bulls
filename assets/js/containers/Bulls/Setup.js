@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { ch_ready } from '../../socket';
 
 const Setup = (appState) => {
 
   const [state, setState] = useState(appState);
-  const [buttonState, setButtonState] = useState("player");
+  const [buttonState, setButtonState] = useState("observer");
   let toggle = null;
 
   function handleButtonChange(ev) {
@@ -13,19 +14,7 @@ const Setup = (appState) => {
   }
 
   function setGameReady() {
-    setState({
-      gameName: state.gameName,
-      userName: state.useState,
-      gameReady: true,
-      game: {
-        player: true,
-        bulls: state.bulls,
-        guesses: state.guesses,
-        gameOver: state.gameOver,
-        message: state.message,
-      },
-    })
-    console.log(state)
+    ch_ready(state.name);
   }
 
   if (buttonState === "player") {
