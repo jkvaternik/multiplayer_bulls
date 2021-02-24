@@ -1,4 +1,4 @@
-defmodule Bulls_and_Cows.Game do
+defmodule BullsAndCows.Game do
   def new do
     %{
       secret: random_secret(),
@@ -37,6 +37,10 @@ defmodule Bulls_and_Cows.Game do
     |> Enum.filter(fn dd -> Enum.member?(digits, dd) end)
     |> MapSet.new()
     |> MapSet.size() === 4
+  end
+
+  def guess(st, "0123") do
+    raise "O is not a number"
   end
 
   def guess(st, number) do
@@ -88,7 +92,7 @@ defmodule Bulls_and_Cows.Game do
     "A#{elem(bulls_cows, 0)}B#{elem(bulls_cows, 1)}"
   end
 
-  def view(st) do
+  def view(st, user) do
     cond do
       st.gameOver? ->
         cond do
@@ -96,14 +100,16 @@ defmodule Bulls_and_Cows.Game do
             %{
               bulls: st.bulls,
               guesses: st.guesses,
-              gameOver: "Game over. You win! :)"
+              gameOver: "Game over. You win! :)",
+              user: user,
             }
 
           length(st.guesses) === 8 ->
             %{
               bulls: st.bulls,
               guesses: st.guesses,
-              gameOver: "Game over. You lose :("
+              gameOver: "Game over. You lose :(",
+              user: user,
             }
         end
 
@@ -111,38 +117,17 @@ defmodule Bulls_and_Cows.Game do
         %{
           bulls: st.bulls,
           guesses: st.guesses,
-          message: "Guess is not four unique digits. Please try again."
+          message: "Guess is not four unique digits. Please try again.",
+          user: user,
         }
 
       true ->
         %{
           bulls: st.bulls,
           guesses: st.guesses,
-          message: nil
+          message: nil,
+          user: user,
         }
     end
-
-    # if st.gameOver? do
-    #   cond do
-    #     List.last(st.bulls) === "A4B0" ->
-    #       %{
-    #         bulls: st.bulls,
-    #         guesses: st.guesses,
-    #         gameOver: "Game over. You win! :)"
-    #       }
-
-    #     length(st.guesses) === 8 ->
-    #       %{
-    #         bulls: st.bulls,
-    #         guesses: st.guesses,
-    #         gameOver: "Game over. You lose :("
-    #       }
-    #   end
-    # else
-    #   %{
-    #     bulls: st.bulls,
-    #     guesses: st.guesses
-    #   }
-    # end
   end
 end

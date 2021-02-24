@@ -11,6 +11,7 @@ socket.connect()
 let channel = socket.channel("game:1", {});
 
 let state = {
+  user: null,
   bulls: [],
   guesses: [],
   gameOver: '',
@@ -30,6 +31,14 @@ function state_update(st) {
 export function ch_join(cb) {
   callback = cb;
   callback(state)
+}
+
+export function ch_login(name) {
+  channel.push("login", {name: name})
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to push", resp)
+    });
 }
 
 export function ch_push(guess) {
@@ -53,5 +62,7 @@ channel.join()
   .receive("error", resp => {
     console.log("Unable to join", resp)
   })
+
+channel.on("view", state_update);
 
 export default socket

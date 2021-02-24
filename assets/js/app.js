@@ -15,49 +15,69 @@ import "../css/app.scss";
 //
 import "phoenix_html";
 
-import { ch_join, ch_push, ch_reset } from './socket';
-
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+
+import { ch_join, ch_login, ch_push, ch_reset } from './socket';
 
 import Login from './containers/Login';
 import Setup from "./containers/Bulls/Setup";
 import Bulls from "./containers/Bulls/Bulls";
 
+import Guesses from './components/Guesses';
+import Message from './components/Message';
+import Controls from './components/Controls';
+
 function App(_) {
 
   const [state, setState] = useState({
-    gameName: null,
-    userName: null,
+    gameName: '',
+    user: null,
     gameReady: null,
-    game: {
-      player: null,
-      bulls: [],
-      guesses: [],
-      gameOver: null,
-      message: null,
-    },
+    // eventually put this in a game object
+    player: null,
+    bulls: [],
+    guesses: [],
+    gameOver: null,
+    message: null,
   });
+
+  console.log(state)
+
+  useEffect(() => {
+    ch_join(setState)
+  });
+
+  function makeGuess(guess) {
+    ch_push(guess)
+  }
+
+  function newGameHandler() {
+    ch_reset()
+  }
+
+  function loginHandler(username, gameName) {
+    ch_login(username)
+  }
 
   let body = null;
 
-  if (!(gameName && username)) {
-    body = <Login />
+  if (!(state.user)) {
+    body = <Login login={loginHandler}/>
   }
   else {
-    if (!gameReady) {
-      body = <Setup />
-    }
-    else {
-      body = <Bulls game={state.game} />
-    }
+    // if (!state.gameReady) {
+    //   body = <Setup />
+    // }
+    // else {
+      body = <div>
+        <p>Welcome {state.user}</p>
+        <Bulls game={state} guessed={makeGuess} newGame={newGameHandler}/>
+        </div>
+    // }
   }
 
-  return (
-    <section>
-      {body}
-    </section>
-  )
+  return body
 }
 
 ReactDOM.render(
