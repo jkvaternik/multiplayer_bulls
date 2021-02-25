@@ -4,25 +4,28 @@ defmodule BullsAndCows.Game do
       secret: random_secret(),
       gameReady: false,
       users: [],
-      bulls: [],
-      guesses: [],
+      bulls: %{},
+      guesses:  %{},
       gameOver: false,
-      error?: false,
+      error?: false
     }
   end
 
-  def ready(st, username) do 
+  def ready(st, username) do
     # Where user has name "name", set player to ready and player to true
-    #IO.puts("REady in channel:" + username)
+    # IO.puts("REady in channel:" + username)
   end
 
   def player(st, user) do
     IO.puts("helllooooooooo")
     IO.puts(inspect(user))
     IO.puts(inspect(st))
-    e = (st.users 
-    |> Enum.find(fn u -> (u.name === user.username) end))
-    newUsers = Enum.filter(st.users, fn u -> (u.name !== user.username) end)
+
+    e =
+      st.users
+      |> Enum.find(fn u -> u.name === user.username end)
+
+    newUsers = Enum.filter(st.users, fn u -> u.name !== user.username end)
     %{st | users: newUsers ++ [%{name: e.name, player?: user.player, ready?: false}]}
   end
 
@@ -53,35 +56,32 @@ defmodule BullsAndCows.Game do
     ## Pulled/modified from Olivia's hw05 code
     digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-    number
-    |> String.split("", trim: true)
-    |> Enum.filter(fn dd -> Enum.member?(digits, dd) end)
-    |> MapSet.new()
-    |> MapSet.size() === 4
-  end
-
-  def guess(st, "0123") do
-    raise "O is not a number"
-  end
-
-  def guess(st, number) do
-    if !st.gameOver do
-      if valid?(number) do
-        bulls = bulls_and_cows(st, number)
-        guesses = st.guesses ++ [number]
-
-        %{
-          st
-          | guesses: guesses,
-            bulls: st.bulls ++ [bulls],
-            error?: false,
-            gameOver: length(guesses) === 8 || bulls === "A4B0"
-        }
-      else
-        %{st | error?: true}
-      end
+    ## check if empty or pass
+    if number === "" do
+      true
     else
-      st
+      number
+      |> String.split("", trim: true)
+      |> Enum.filter(fn dd -> Enum.member?(digits, dd) end)
+      |> MapSet.new()
+      |> MapSet.size() === 4
+    end
+  end
+
+  def guess(st, user, number) do
+    if valid?(number) do
+      user_bulls = Map.get(st.bulls, user, [])
+      user_guesses = Map.get(st.guesses, user, [])
+      bulls = bulls_and_cows(st, number)
+      guesses = user_guesses ++ [number]
+
+      %{
+        st
+        | guesses: %{st.guesses | user: [guesses]},
+          bulls: %{st.bulls | user: [user_bulls ++ [bulls]]},
+          error?: false,
+          gameOver: bulls === "A4B0"
+      }
     end
   end
 
@@ -115,6 +115,7 @@ defmodule BullsAndCows.Game do
 
   def view(st) do
     IO.puts(inspect(st))
+
     cond do
       st.gameOver ->
         cond do
@@ -124,7 +125,7 @@ defmodule BullsAndCows.Game do
               users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
-              gameOver: "Game over. You win! :)",
+              gameOver: "Game over. You win! :)"
             }
 
           length(st.guesses) === 8 ->
@@ -133,7 +134,7 @@ defmodule BullsAndCows.Game do
               users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
-              gameOver: "Game over. You lose :(",
+              gameOver: "Game over. You lose :("
             }
         end
 
@@ -143,7 +144,7 @@ defmodule BullsAndCows.Game do
           users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
-          message: "Guess is not four unique digits. Please try again.",
+          message: "Guess is not four unique digits. Please try again."
         }
 
       true ->
@@ -152,7 +153,7 @@ defmodule BullsAndCows.Game do
           users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
-          message: nil,
+          message: nil
         }
     end
   end
