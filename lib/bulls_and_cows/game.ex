@@ -48,8 +48,8 @@ defmodule BullsAndCows.Game do
     end
   end
 
-  def login(st, user) do
-    %{st | users: st.users ++ [%{name: user, player?: false, ready?: false}]}
+  def login(st, username) do
+    %{st | users: st.users ++ [%{name: username, player?: false, ready?: false}]}
   end
 
   def valid?(number) do
@@ -113,7 +113,7 @@ defmodule BullsAndCows.Game do
     "A#{elem(bulls_cows, 0)}B#{elem(bulls_cows, 1)}"
   end
 
-  def view(st) do
+  def view(st, user) do
     IO.puts(inspect(st))
 
     cond do

@@ -3,12 +3,15 @@ import React from 'react';
 import Aux from './Aux';
 
 const Guesses = (props) => {
-  const guesses_view = props.guesses.guesses.map((guess, i) => {
+  const guesses = props.guesses.guesses;
+  const bulls = props.guesses.bull;
+
+  const guesses_view = Object.entries(guesses).map((user) => {
+
     return (
       <Aux key={i}>
         <p style={{ marginRight: '10px' }}><strong>{i + 1}.</strong></p>
         <p style={{ marginRight: '10px' }}>{guess}</p>
-        <p>{props.guesses.bulls[i]}</p>
       </Aux>
     )
   })
