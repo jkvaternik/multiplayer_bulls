@@ -6,15 +6,19 @@ defmodule BullsAndCows.Game do
       bulls: [],
       guesses: [],
       gameOver?: false,
-      error?: false
-      ready?: false
+      error?: false,
+      ready?: false,
+      user: ""
     }
   end
 
-  def ready(st, name) do 
+  def ready(st, username) do 
     # Where user has name "name", set player to ready and player to true
-    user = Enum.filter(st.users, fn user => user.name == name) end)
-    IO.puts(user)
+    IO.puts("REady in channel:" + username)
+  end
+
+  def player(st, username, player) do
+    IO.puts("Player set in channel:" + username)
   end
 
   def random_secret() do
@@ -114,7 +118,7 @@ defmodule BullsAndCows.Game do
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You win! :)",
-              user: user,
+              user: st.user
             }
 
           length(st.guesses) === 8 ->
@@ -123,7 +127,7 @@ defmodule BullsAndCows.Game do
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You lose :(",
-              user: user,
+              user: st.user
             }
         end
 
@@ -133,7 +137,7 @@ defmodule BullsAndCows.Game do
           bulls: st.bulls,
           guesses: st.guesses,
           message: "Guess is not four unique digits. Please try again.",
-          user: user,
+          user: st.user
         }
 
       true ->
@@ -142,7 +146,7 @@ defmodule BullsAndCows.Game do
           bulls: st.bulls,
           guesses: st.guesses,
           message: nil,
-          user: user,
+          user: st.user
         }
     end
   end

@@ -18,7 +18,7 @@ import "phoenix_html";
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import { ch_join, ch_login, ch_push, ch_reset } from './socket';
+import { ch_join, ch_login, ch_push, ch_reset, ch_ready, ch_player } from './socket';
 
 import Login from './containers/Login';
 import Setup from "./containers/Bulls/Setup";
@@ -29,13 +29,17 @@ import Message from './components/Message';
 import Controls from './components/Controls';
 
 function App(_) {
+  const [userState, setUserState] = useState({
+    name: null,
+    player: null,
+    ready: null,
+  })
 
   const [state, setState] = useState({
     gameName: '',
-    user: null,
     gameReady: null,
+    users: [],
     // eventually put this in a game object
-    player: null,
     bulls: [],
     guesses: [],
     gameOver: null,
@@ -57,31 +61,44 @@ function App(_) {
   }
 
   function loginHandler(username, gameName) {
+    setUserState({
+      name: username, 
+      player: false,
+      ready: false,
+    })
     ch_login(username, gameName)
+  }
+
+  function handlePlayerType(username, player) {
+    ch_player(username, player)
+  }
+
+  function handlePlayerReady(username) {
+    ch_ready(username);
   }
 
   let body = null;
 
-  if (!(state.user)) {
+  if (!userState.name) {
     body = <Login login={loginHandler} />
   }
   else {
-    // if (!state.gameReady) {
-    //   body = <Setup />
-    // }
-    // else {
+    if (!state.gameReady) {
+      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={userState}/>
+     }
+    else {
     body = (
       <div>
-        <p>Welcome {state.user}</p>
+        <p>Welcome {state.name}</p>
         <Bulls game={state} guessed={makeGuess} newGame={newGameHandler} />
       </div>
     )
-    // }
+    }
   }
 
   // let body = <Setup state={state}/>
 
-  return body
+  return body;
 }
 
 ReactDOM.render(

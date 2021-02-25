@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
-import { ch_ready } from '../../socket';
 
-const Setup = (appState) => {
+const Setup = (props) => {
 
-  const [state, setState] = useState(appState);
+  const [state, setState] = useState(props.state);
   const [buttonState, setButtonState] = useState("observer");
   let toggle = null;
 
   function handleButtonChange(ev) {
-    if (!state.gameReady) {
-      setButtonState(ev.target.value);
+    if (!state.ready) {
+      let type = ev.target.value
+      setButtonState(type);
+      props.setPlayer(state.name, type == "player")
     }
   }
 
-  function setGameReady() {
-    ch_ready(state.name);
-  }
-
   if (buttonState === "player") {
-    toggle = (<button className="btn btn-primary" onClick={setGameReady}>Ready!</button>)
+    toggle = (<button className="btn btn-primary" onClick={() => props.playerReady(state.name)}>Ready!</button>)
   } else {  
     toggle = (<p>Ready</p>)
   }

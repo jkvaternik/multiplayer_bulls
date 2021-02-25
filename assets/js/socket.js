@@ -11,11 +11,16 @@ socket.connect()
 let channel = socket.channel("game:lobby", {});
 
 let state = {
-  user: [],
-  bulls: [],
-  guesses: [],
-  gameOver: '',
-  message: null
+    gameName: '',
+    gameReady: null,
+    name: null,
+    player: null,
+    ready: null,
+    users: [],
+    bulls: [],
+    guesses: [],
+    gameOver: null,
+    message: null,
 };
 
 let callback = null;
@@ -55,8 +60,18 @@ export function ch_push(guess) {
     });
 }
 
-export function ch_ready(userName) {
-  channel.push("ready", userName)
+export function ch_ready(username) {
+  channel.push("ready", username)
+  .receive("ok", state_update)
+  .receive("error", resp => {
+    console.log("Unable to push", resp)
+  });
+}
+
+export function ch_player(username, player) {
+  console.log("NAme: " + username)
+  console.log("PLayer: " + player)
+  channel.push("player", {username: username, player: player})
   .receive("ok", state_update)
   .receive("error", resp => {
     console.log("Unable to push", resp)

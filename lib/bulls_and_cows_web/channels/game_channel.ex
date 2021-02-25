@@ -23,10 +23,12 @@ defmodule BullsAndCowsWeb.GameChannel do
     end
   end
 
-  def handle_in("login", %{"name" => user}, socket) do
+  @impl true
+  def handle_in("login", user, socket) do
     socket = assign(socket, :user, user)
     view = socket.assigns[:name]
     |> GameServer.peek()
+    |> Game.login(user)
     |> Game.view(user)
     {:reply, {:ok, view}, socket}
   end
@@ -53,10 +55,20 @@ defmodule BullsAndCowsWeb.GameChannel do
     {:reply, {:ok, view}, socket}
   end
 
-  def handle_in("ready", newUser, socket) do 
+  @impl true  
+  def handle_in("ready", username, socket) do 
     user = socket.assigns[:user]
     view = socket.assigns[:name]
-    |> GameServer.ready(newUser)
+    |> GameServer.ready(username)
+    |> Game.view(user)
+    {:reply, {:ok, view}, socket}
+  end
+
+
+  def handle_in("player", %{player: player, username: username}, socket) do 
+    user = socket.assigns[:user]
+    view = socket.assigns[:name]
+    |> GameServer.player(username, player)
     |> Game.view(user)
     {:reply, {:ok, view}, socket}
   end
