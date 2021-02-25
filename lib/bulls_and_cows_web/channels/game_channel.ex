@@ -5,18 +5,14 @@ defmodule BullsAndCowsWeb.GameChannel do
   alias BullsAndCows.GameServer
 
   @impl true
-  def join("game:lobby", _message, socket) do
-    {:ok, socket}
-  end
-
   def join("game:" <> name, payload, socket) do
     if authorized?(payload) do
       GameServer.start(name)
       socket = socket
       |> assign(:name, name)
-      #|> assign(:user, "")
+      |> assign(:user, "")
       game = GameServer.peek(name)
-      view = Game.view(game)
+      view = Game.view(game, "")
       {:ok, view, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -25,11 +21,10 @@ defmodule BullsAndCowsWeb.GameChannel do
 
   @impl true
   def handle_in("login", user, socket) do
-    #socket = assign(socket, :user, user)
+    socket = assign(socket, :user, user)
     view = socket.assigns[:name]
-    |> GameServer.peek()
-    |> Game.login(user)
-    |> Game.view()
+    |> GameServer.login(user)
+    |> Game.view(user)
     IO.puts(inspect(view))
     {:reply, {:ok, view}, socket}
   end
@@ -56,8 +51,8 @@ defmodule BullsAndCowsWeb.GameChannel do
     {:reply, {:ok, view}, socket}
   end
 
-  @impl true  
-  def handle_in("ready", username, socket) do 
+  @impl true
+  def handle_in("ready", username, socket) do
     #user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.ready(username)
@@ -66,7 +61,7 @@ defmodule BullsAndCowsWeb.GameChannel do
   end
 
 
-  def handle_in("player", user, socket) do 
+  def handle_in("player", user, socket) do
     #user = socket.assigns[:user]
     IO.puts(inspect("socket"))
     IO.puts(inspect(GameServer.peek(socket.assigns[:name])))

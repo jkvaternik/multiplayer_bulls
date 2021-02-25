@@ -39,11 +39,15 @@ defmodule BullsAndCows.GameServer do
     GenServer.call(reg(name), {:peek, name})
   end
 
-  def player(name, user) do 
+  def login(name, username) do
+    GenServer.call(reg(name), {:login, name, username})
+  end
+
+  def player(name, user) do
     GenServer.call(reg(name), {:player, name, user})
   end
 
-  def ready(name, user) do 
+  def ready(name, user) do
     GenServer.call(reg(name), {:ready, name, user})
   end
 
@@ -69,13 +73,19 @@ defmodule BullsAndCows.GameServer do
     {:reply, game, game}
   end
 
-  def handle_call({:player, name, user}, _from, game) do 
+  def handle_call({:login, name, username}, _from, game) do
+    game = Game.login(game, username)
+    BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:player, name, user}, _from, game) do
     game = Game.player(game, user)
     BackupAgent.put(name, game)
     {:reply, game, game}
   end
 
-  def handle_call({:ready, name}, _from, game) do 
+  def handle_call({:ready, name}, _from, game) do
     game = Game.ready(game, name)
     {:reply, game, game}
   end
