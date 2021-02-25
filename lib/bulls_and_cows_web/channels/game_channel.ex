@@ -32,42 +32,50 @@ defmodule BullsAndCowsWeb.GameChannel do
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
   @impl true
+<<<<<<< HEAD
   def handle_in("guess", guess, socket) do
     #user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.guess(guess)
     |> Game.view()
+=======
+  def handle_in("guess", %{"number" => num}, socket) do
+    user = socket.assigns[:user]
+    view = socket.assigns[:name]
+    |> GameServer.guess(num)
+    |> Game.view(user)
+>>>>>>> 108a01589428de7fc108734510fd35f4365863b1
     broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
   @impl true
   def handle_in("reset", _, socket) do
-    #user = socket.assigns[:user]
+    user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.reset()
-    |> Game.view()
+    |> Game.view(user)
     broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
   @impl true
   def handle_in("ready", username, socket) do
-    #user = socket.assigns[:user]
+    user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.ready(username)
-    |> Game.view()
+    |> Game.view(user)
     {:reply, {:ok, view}, socket}
   end
 
 
-  def handle_in("player", user, socket) do
-    #user = socket.assigns[:user]
+  def handle_in("player", %{"username" => username, "player" => player}, socket) do
+    user = socket.assigns[:user]
     IO.puts(inspect("socket"))
     IO.puts(inspect(GameServer.peek(socket.assigns[:name])))
     view = socket.assigns[:name]
-    |> GameServer.player(user)
-    |> Game.view()
+    |> GameServer.player(username, player)
+    |> Game.view(user)
     {:reply, {:ok, view}, socket}
   end
 
@@ -75,8 +83,8 @@ defmodule BullsAndCowsWeb.GameChannel do
 
   @impl true
   def handle_out("view", msg, socket) do
-    #user = socket.assigns[:user]
-    #msg = %{msg | user: user}
+    user = socket.assigns[:user]
+    msg = %{msg | user: user}
     push(socket, "view", msg)
     {:noreply, socket}
   end

@@ -23,10 +23,10 @@ defmodule BullsAndCows.Game do
 
     e =
       st.users
-      |> Enum.find(fn u -> u.name === user.username end)
+      |> Enum.find(fn u -> u.username === user.username end)
 
-    newUsers = Enum.filter(st.users, fn u -> u.name !== user.username end)
-    %{st | users: newUsers ++ [%{name: e.name, player?: user.player, ready?: false}]}
+    newUsers = Enum.filter(st.users, fn u -> u.username !== user.username end)
+    %{st | users: newUsers ++ [%{username: e.username, player?: user.player, ready?: false}]}
   end
 
   def random_secret() do
@@ -49,7 +49,7 @@ defmodule BullsAndCows.Game do
   end
 
   def login(st, username) do
-    %{st | users: st.users ++ [%{name: username, player?: false, ready?: false}]}
+    %{st | users: st.users ++ [%{username: username, player?: false, ready?: false}]}
   end
 
   def valid?(number) do

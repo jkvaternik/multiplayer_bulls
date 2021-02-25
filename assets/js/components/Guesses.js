@@ -10,7 +10,7 @@ const Guesses = (props) => {
     return (
       <Aux key={i}>
         <p style={{ marginRight: '10px' }}><strong>{i + 1}.</strong></p>
-        <p style={{ marginRight: '10px' }}>{user}:{gs}</p>
+        <p style={{ marginRight: '10px' }}>{user}:{guess}</p>
       </Aux>
     )
   }))
