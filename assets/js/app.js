@@ -29,11 +29,7 @@ import Message from './components/Message';
 import Controls from './components/Controls';
 
 function App(_) {
-  const [userState, setUserState] = useState({
-    name: null,
-    player: null,
-    ready: null,
-  })
+  const [username, setUsername] = useState({name: null, ready: false})
 
   const [state, setState] = useState({
     gameName: '',
@@ -61,11 +57,7 @@ function App(_) {
   }
 
   function loginHandler(username, gameName) {
-    setUserState({
-      name: username, 
-      player: false,
-      ready: false,
-    })
+    setUsername({name: username, ready: false})
     ch_login(username, gameName)
   }
 
@@ -79,17 +71,17 @@ function App(_) {
 
   let body = null;
 
-  if (!userState.name) {
+  if (!username.name) {
     body = <Login login={loginHandler} />
   }
   else {
     if (!state.gameReady) {
-      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={userState}/>
+      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={username}/>
      }
     else {
     body = (
       <div>
-        <p>Welcome {state.name}</p>
+        <p>Welcome {username.name}</p>
         <Bulls game={state} guessed={makeGuess} newGame={newGameHandler} />
       </div>
     )

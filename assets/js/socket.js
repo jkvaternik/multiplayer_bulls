@@ -11,11 +11,7 @@ socket.connect()
 let channel = socket.channel("game:lobby", {});
 
 let state = {
-    gameName: '',
     gameReady: null,
-    name: null,
-    player: null,
-    ready: null,
     users: [],
     bulls: [],
     guesses: [],
@@ -45,7 +41,7 @@ export function ch_login(user, gameName) {
     .receive("error", resp => {
       console.log("Unable to join", resp)
     })
-  channel.push("login", { name: user })
+  channel.push("login", user)
     .receive("ok", state_update)
     .receive("error", resp => {
       console.log("Unable to push", resp)
@@ -69,9 +65,9 @@ export function ch_ready(username) {
 }
 
 export function ch_player(username, player) {
-  console.log("NAme: " + username)
-  console.log("PLayer: " + player)
-  channel.push("player", {username: username, player: player})
+  console.log("Name: " + username)
+  console.log("Player: " + player)
+  channel.push("player", {username, player})
   .receive("ok", state_update)
   .receive("error", resp => {
     console.log("Unable to push", resp)

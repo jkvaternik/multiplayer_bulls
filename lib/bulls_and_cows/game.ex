@@ -2,23 +2,28 @@ defmodule BullsAndCows.Game do
   def new do
     %{
       secret: random_secret(),
+      gameReady: false,
       users: [],
       bulls: [],
       guesses: [],
-      gameOver?: false,
+      gameOver: false,
       error?: false,
-      ready?: false,
-      user: ""
     }
   end
 
   def ready(st, username) do 
     # Where user has name "name", set player to ready and player to true
-    IO.puts("REady in channel:" + username)
+    #IO.puts("REady in channel:" + username)
   end
 
-  def player(st, username, player) do
-    IO.puts("Player set in channel:" + username)
+  def player(st, user) do
+    IO.puts("helllooooooooo")
+    IO.puts(inspect(user))
+    IO.puts(inspect(st))
+    e = (st.users 
+    |> Enum.find(fn u -> (u.name === user.username) end))
+    newUsers = Enum.filter(st.users, fn u -> (u.name !== user.username) end)
+    %{st | users: newUsers ++ [%{name: e.name, player?: user.player, ready?: false}]}
   end
 
   def random_secret() do
@@ -60,7 +65,7 @@ defmodule BullsAndCows.Game do
   end
 
   def guess(st, number) do
-    if !st.gameOver? do
+    if !st.gameOver do
       if valid?(number) do
         bulls = bulls_and_cows(st, number)
         guesses = st.guesses ++ [number]
@@ -70,7 +75,7 @@ defmodule BullsAndCows.Game do
           | guesses: guesses,
             bulls: st.bulls ++ [bulls],
             error?: false,
-            gameOver?: length(guesses) === 8 || bulls === "A4B0"
+            gameOver: length(guesses) === 8 || bulls === "A4B0"
         }
       else
         %{st | error?: true}
@@ -108,45 +113,46 @@ defmodule BullsAndCows.Game do
     "A#{elem(bulls_cows, 0)}B#{elem(bulls_cows, 1)}"
   end
 
-  def view(st, user) do
+  def view(st) do
+    IO.puts(inspect(st))
     cond do
-      st.gameOver? ->
+      st.gameOver ->
         cond do
           List.last(st.bulls) === "A4B0" ->
             %{
+              gameReady: st.gameReady,
               users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You win! :)",
-              user: st.user
             }
 
           length(st.guesses) === 8 ->
             %{
+              gameReady: st.gameReady,
               users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
               gameOver: "Game over. You lose :(",
-              user: st.user
             }
         end
 
       st.error? ->
         %{
+          gameReady: st.gameReady,
           users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
           message: "Guess is not four unique digits. Please try again.",
-          user: st.user
         }
 
       true ->
         %{
+          gameReady: st.gameReady,
           users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
           message: nil,
-          user: st.user
         }
     end
   end
