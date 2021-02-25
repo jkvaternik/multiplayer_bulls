@@ -68,7 +68,7 @@ export function ch_ready(username) {
 export function ch_player(username, player) {
   console.log("Name: " + username)
   console.log("Player: " + player)
-  channel.push("player", {name: username, player: player})
+  channel.push("player", {username: username, player: player})
   .receive("ok", state_update)
   .receive("error", resp => {
     console.log("Unable to push", resp)

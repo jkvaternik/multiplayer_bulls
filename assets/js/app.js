@@ -75,10 +75,10 @@ function App(_) {
     body = <Login login={loginHandler} />
   }
   else {
-    // if (!state.gameReady) {
-    //   body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={username}/>
-    //  }
-    // else {
+    if (!state.gameReady) {
+      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={username}/>
+     }
+    else {
     body = (
       <div>
         <p>Welcome {username.name}</p>
@@ -86,7 +86,7 @@ function App(_) {
       </div>
     )
     }
-  // }
+  }
 
   // let body = <Setup state={state}/>
 
