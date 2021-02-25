@@ -49,6 +49,7 @@ export function ch_login(user, gameName) {
 }
 
 export function ch_push(guess) {
+  console.log(channel)
   channel.push("guess", guess)
     .receive("ok", state_update)
     .receive("error", resp => {
