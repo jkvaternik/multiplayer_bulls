@@ -60,7 +60,7 @@ defmodule BullsAndCowsWeb.GameChannel do
   def handle_in("ready", username, socket) do 
     #user = socket.assigns[:user]
     view = socket.assigns[:name]
-    |> Game.ready(username)
+    |> GameServer.ready(username)
     |> Game.view()
     {:reply, {:ok, view}, socket}
   end
@@ -71,7 +71,6 @@ defmodule BullsAndCowsWeb.GameChannel do
     IO.puts(inspect("socket"))
     IO.puts(inspect(GameServer.peek(socket.assigns[:name])))
     view = socket.assigns[:name]
-    |> GameServer.peek()
     |> GameServer.player(user)
     |> Game.view()
     {:reply, {:ok, view}, socket}
