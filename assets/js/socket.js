@@ -48,9 +48,9 @@ export function ch_login(user, gameName) {
     });
 }
 
-export function ch_push(guess) {
+export function ch_push(username, guess) {
   console.log(channel)
-  channel.push("guess", guess)
+  channel.push("guess", {name: username, guess: guess})
     .receive("ok", state_update)
     .receive("error", resp => {
       console.log("Unable to push", resp)

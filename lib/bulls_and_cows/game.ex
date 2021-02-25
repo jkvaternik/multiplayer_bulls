@@ -68,7 +68,9 @@ defmodule BullsAndCows.Game do
     end
   end
 
-  def guess(st, user, number) do
+  def guess(st, guess) do
+    user = guess.name
+    number = guess.guess
     if valid?(number) do
       user_bulls = Map.get(st.bulls, user, [])
       user_guesses = Map.get(st.guesses, user, [])
@@ -77,8 +79,8 @@ defmodule BullsAndCows.Game do
 
       %{
         st
-        | guesses: %{st.guesses | user: [guesses]},
-          bulls: %{st.bulls | user: [user_bulls ++ [bulls]]},
+        | guesses: Map.put(st.guesses, user, [guesses]),
+          bulls: Map.put(st.bulls, user, [user_bulls ++ [bulls]]),
           error?: false,
           gameOver: bulls === "A4B0"
       }

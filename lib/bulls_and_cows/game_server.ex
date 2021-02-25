@@ -59,8 +59,8 @@ defmodule BullsAndCows.GameServer do
     {:reply, game, game}
   end
 
-  def handle_call({:guess, name, letter}, _from, game) do
-    game = Game.guess(game, letter)
+  def handle_call({:guess, name, guess}, _from, game) do
+    game = Game.guess(game, guess)
     BackupAgent.put(name, game)
     {:reply, game, game}
   end

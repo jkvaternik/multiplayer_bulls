@@ -3,6 +3,7 @@ import React from 'react';
 import Aux from './Aux';
 
 const Guesses = (props) => {
+  
   const guesses_view = props.guesses.guesses.map((guess, i) => {
     return (
       <Aux key={i}>

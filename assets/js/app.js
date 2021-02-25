@@ -48,8 +48,8 @@ function App(_) {
     ch_join(setState)
   });
 
-  function makeGuess(guess) {
-    ch_push(guess)
+  function makeGuess(username, guess) {
+    ch_push(username, guess)
   }
 
   function newGameHandler() {

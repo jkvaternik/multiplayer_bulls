@@ -37,10 +37,10 @@ defmodule BullsAndCowsWeb.GameChannel do
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
   @impl true
-  def handle_in("guess", num, socket) do
+  def handle_in("guess", guess, socket) do
     #user = socket.assigns[:user]
     view = socket.assigns[:name]
-    |> GameServer.guess(num)
+    |> GameServer.guess(guess)
     |> Game.view()
     broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
