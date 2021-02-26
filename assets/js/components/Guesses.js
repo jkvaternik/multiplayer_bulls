@@ -3,14 +3,9 @@ import React from 'react';
 import Aux from './Aux';
 
 const Guesses = (props) => {
-<<<<<<< HEAD
-  // const guesses = Object.entries(props.guesses.guesses);
-  // const bulls = Object.values(props.guesses.bulls);
-=======
   const users = Object.keys(props.guesses.guesses);
   const guesses = Object.values(props.guesses.guesses);
   const bulls = Object.values(props.guesses.bulls);
->>>>>>> 4ba287ea08c7d214e078f1389e0642b3d0809359
 
   let results = users.map((user, i) => {
     return {
