@@ -102,7 +102,6 @@ function App(_) {
     body = <Login login={loginHandler} />
   }
   else {
-    
     if (!state.gameReady) {
       body = <Setup playerReady={handlePlayerReady} users={userScores} setPlayer={handlePlayerType} state={state.winners} username={username}/>
      }
