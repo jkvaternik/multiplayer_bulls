@@ -2,11 +2,11 @@ defmodule BullsAndCows.Game do
   def new do
     %{
       secret: random_secret(),
-      gameReady?: false,
+      gameReady: false,
       gamename: "",
       users: [],
-      gameOver?: false,
-      error?: false,
+      gameOver: false,
+      error: false,
       winners: []
     }
   end
@@ -25,8 +25,11 @@ defmodule BullsAndCows.Game do
             [
               %{
                 username: e.username,
-                player?: e.player?,
-                ready?: !e.ready?,
+                player: e.player,
+                ready: !e.ready,
+                bulls: e.bulls,
+                guesses: e.guesses,
+                turn_guess: e.turn_guess,
                 wins: e.wins,
                 losses: e.losses
               }
@@ -48,8 +51,11 @@ defmodule BullsAndCows.Game do
             [
               %{
                 username: e.username,
-                player?: user.player,
-                ready?: false,
+                player: user.player,
+                ready: false,
+                bulls: e.bulls,
+                guesses: e.guesses,
+                turn_guess: e.turn_guess,
                 wins: e.wins,
                 losses: e.losses
               }
@@ -85,8 +91,8 @@ defmodule BullsAndCows.Game do
               [
                 %{
                   username: username,
-                  player?: false,
-                  ready?: false,
+                  player: false,
+                  ready: false,
                   bulls: [],
                   guesses: [],
                   turn_guess: "",
@@ -120,8 +126,8 @@ defmodule BullsAndCows.Game do
             [
               %{
                 username: e.username,
-                player?: false,
-                ready?: false,
+                player: false,
+                ready: false,
                 bulls: e.bulls,
                 guesses: e.guesses,
                 turn_guess: "",
@@ -151,7 +157,6 @@ defmodule BullsAndCows.Game do
       st.users
       |> Enum.map(fn u ->
         if u.username === user do
-          IO.puts(inspect(u))
           %{u | turn_guess: number}
         else
           u
@@ -219,25 +224,54 @@ defmodule BullsAndCows.Game do
     "A#{elem(bulls_cows, 0)}B#{elem(bulls_cows, 1)}"
   end
 
+  def game_ready?(st) do
+    ready = true
+
+    min =
+      st.users
+      |> Enum.filter(fn uu ->
+        if uu.player do
+          ready = uu.ready
+        end
+      end)
+      |> Enum.count() >= 4
+
+    if ready && min do
+      %{
+        st
+        | gameReady: true,
+          winners: []
+      }
+    else
+      %{st | gameReady: false}
+    end
+  end
+
   def view(st) do
     cond do
-      st.gameOver? ->
+      st.gameOver ->
         newUsers =
           Enum.map(st.users, fn uu ->
-            if uu.player? do
+            if uu.player do
               if !Enum.member?(st.winners, uu.username) do
                 uu = %{
                   username: uu.username,
-                  player?: false,
-                  ready?: false,
+                  player: false,
+                  ready: false,
+                  bulls: [],
+                  guesses: [],
+                  turn_guess: "",
                   wins: uu.wins,
                   losses: uu.losses + 1
                 }
               else
                 uu = %{
                   username: uu.username,
-                  player?: false,
-                  ready?: false,
+                  player: false,
+                  ready: false,
+                  bulls: [],
+                  guesses: [],
+                  turn_guess: "",
                   wins: uu.wins + 1,
                   losses: uu.losses
                 }
@@ -245,8 +279,11 @@ defmodule BullsAndCows.Game do
             else
               uu = %{
                 username: uu.username,
-                player?: false,
-                ready?: false,
+                player: false,
+                ready: false,
+                bulls: [],
+                guesses: [],
+                turn_guess: "",
                 wins: uu.wins,
                 losses: uu.losses
               }
@@ -255,35 +292,11 @@ defmodule BullsAndCows.Game do
 
         %{
           secret: random_secret(),
-          gameReady?: false,
+          gameReady: false,
           users: newUsers,
-          bulls: %{},
-          guesses: %{},
-          gameOver?: false,
+          gameOver: false,
           winners: st.winners
         }
-
-      !st.gameReady? ->
-        ready = true
-
-        min =
-          st.users
-          |> Enum.filter(fn uu ->
-            if uu.player? do
-              ready = uu.ready?
-            end
-          end)
-          |> Enum.count() >= 4
-
-        if ready && min do
-          %{
-            st
-            | gameReady?: true,
-              winners: []
-          }
-        else
-          %{st | gameReady?: false}
-        end
 
       true ->
         st

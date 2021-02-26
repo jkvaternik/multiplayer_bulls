@@ -71,10 +71,17 @@ function App(_) {
   }
 
   function handlePlayerType(player) {
+    setUsername({
+      ...username,
+      player: player
+    })
     ch_player(player)
   }
 
   function handlePlayerReady() {
+    setUsername({
+      ...username,
+    })
     ch_ready();
   }
 
@@ -86,6 +93,8 @@ function App(_) {
       ready: false
     })
   }
+
+  console.log(state);
 
   let body = null;
 
@@ -106,7 +115,7 @@ function App(_) {
       body = (
         <div>
           <p>Welcome {username.name}</p>
-          <Bulls game={state} leave={leaveGame} guessed={makeGuess}/>
+          <Bulls game={state} user={username} leave={leaveGame} guessed={makeGuess}/>
         </div>
       )
     }
