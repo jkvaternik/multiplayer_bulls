@@ -51,7 +51,6 @@ function App(_) {
   useEffect(() => {
     ch_join(setState)
   });
-  console.log(state)
 
   function makeGuess(guess) {
     ch_push(guess)

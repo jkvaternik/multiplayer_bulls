@@ -3,20 +3,7 @@ import React from 'react';
 import Aux from './Aux';
 
 const Guesses = (props) => {
-  const users = Object.keys(props.guesses.guesses);
-  const guesses = Object.values(props.guesses.guesses);
-  const bulls = Object.values(props.guesses.bulls);
-
-  let results = users.map((user, i) => {
-    return {
-      user: user,
-      guesses: guesses[i],
-      bulls: bulls[i]
-    }
-  })
-
-  const guesses_view = results.map((obj) => {
-
+  const guesses_view = props.users.map((obj) => {
     const user_view = obj.guesses.map((_, j) => {
       return (
         <div key={j}>
@@ -29,7 +16,7 @@ const Guesses = (props) => {
 
     return (
       <div style={{display: 'inline-block', marginRight: '20px', marginBottom: '20px'}}>
-        <span>{obj.user}</span>
+        <span>{obj.username}</span>
         {user_view}
       </div>
     )

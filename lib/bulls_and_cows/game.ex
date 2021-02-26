@@ -2,7 +2,8 @@ defmodule BullsAndCows.Game do
   def new do
     %{
       secret: random_secret(),
-      gameReady: false,
+      gameReady?: false,
+      gamename: "",
       users: [],
       gameOver?: false,
       error?: false,
@@ -146,12 +147,16 @@ defmodule BullsAndCows.Game do
     user = guess.username
     number = guess.number
 
-    users = st.users
-    |> Enum.map(fn u ->
-      if u.username === user do
-        %{ user | turn_guess: number}
-      end
-    end)
+    users =
+      st.users
+      |> Enum.map(fn u ->
+        if u.username === user do
+          IO.puts(inspect(u))
+          %{u | turn_guess: number}
+        else
+          u
+        end
+      end)
 
     %{st | users: users}
   end
@@ -168,14 +173,18 @@ defmodule BullsAndCows.Game do
               turn_guess: ""
           }
         else
-          turn_bulls = bulls_and_cows(st, user.turn_guess)
+          if valid?(user.turn_guess) do
+            turn_bulls = bulls_and_cows(st, user.turn_guess)
 
-          %{
-            user
-            | guesses: user.guesses ++ [user.turn_guess],
-              bulls: user.bulls ++ [turn_bulls],
-              turn_guess: ""
-          }
+            %{
+              user
+              | guesses: user.guesses ++ [user.turn_guess],
+                bulls: user.bulls ++ [turn_bulls],
+                turn_guess: ""
+            }
+          else
+            raise "You're stoopid."
+          end
         end
       end)
 
@@ -246,7 +255,7 @@ defmodule BullsAndCows.Game do
 
         %{
           secret: random_secret(),
-          gameReady: false,
+          gameReady?: false,
           users: newUsers,
           bulls: %{},
           guesses: %{},
@@ -254,7 +263,7 @@ defmodule BullsAndCows.Game do
           winners: st.winners
         }
 
-      !st.gameReady ->
+      !st.gameReady? ->
         ready = true
 
         min =
@@ -269,11 +278,11 @@ defmodule BullsAndCows.Game do
         if ready && min do
           %{
             st
-            | gameReady: true,
+            | gameReady?: true,
               winners: []
           }
         else
-          %{st | gameReady: false}
+          %{st | gameReady?: false}
         end
 
       true ->

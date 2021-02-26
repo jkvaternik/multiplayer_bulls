@@ -26,7 +26,7 @@ const Bulls = (props) => {
         <Controls
           guessed={props.guessed} error={setError}/>
         <p>{error}</p>
-        <Guesses guesses={{ guesses: props.game.guesses, bulls: props.game.bulls }} />
+        <Guesses users={props.game.users} />
       </div>
     </section>
   );
