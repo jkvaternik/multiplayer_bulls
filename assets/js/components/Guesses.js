@@ -3,27 +3,41 @@ import React from 'react';
 import Aux from './Aux';
 
 const Guesses = (props) => {
-  const guesses = Object.entries(props.guesses.guesses);
+  const users = Object.keys(props.guesses.guesses);
+  const guesses = Object.values(props.guesses.guesses);
   const bulls = Object.values(props.guesses.bulls);
 
-  // const results = guesses.map(([user, guess]) => guess.map((g, i) => {
-  //   return {user: user, guesses: guess, bulls: bulls[i]}
-  // }))
+  let results = users.map((user, i) => {
+    return {
+      user: user,
+      guesses: guesses[i],
+      bulls: bulls[i]
+    }
+  })
 
-  // console.log(Object.values(results))
-  // const guesses_view = Object.values(results).map(([user, gs, bs]) => gs.map((_, i) => {
-  //   return (
-  //           <Aux key={i}>
-  //             <p style={{ marginRight: '10px' }}><strong>{i + 1}.</strong></p>
-  //             <p style={{ marginRight: '10px' }}>{user}: {gs[i]}</p>
-  //             <p style={{ marginRight: '10px' }}>{bs[i]}</p>
-  //           </Aux>
-  //   )
-  // }))
+  const guesses_view = results.map((obj) => {
+
+    const user_view = obj.guesses.map((_, j) => {
+      return (
+        <div key={j}>
+          <span style={{marginRight: '10px'}}><strong>{j + 1}.</strong></span>
+          <span style={{marginRight: '10px'}}>{obj.guesses[j]}</span>
+          <span style={{marginRight: '10px'}}>{obj.bulls[j]}</span>
+        </div>
+      )
+    })
+
+    return (
+      <div style={{display: 'inline-block', marginRight: '20px', marginBottom: '20px'}}>
+        <span>{obj.user}</span>
+        {user_view}
+      </div>
+    )
+  })
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
-      {/*guesses_view*/}
+    <div>
+      {guesses_view}
     </div>
   )
 }

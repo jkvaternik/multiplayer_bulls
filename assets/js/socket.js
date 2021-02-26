@@ -7,10 +7,11 @@ let socket = new Socket(
 
 socket.connect()
 
-// Now that you are connected, you can join channels with a topic:
-let channel = socket.channel(`game:1`, {});
+// Now that you are connected, you can join channels with a topic:a
+let channel = socket.channel(`game:lobby`, {});
 
 let state = {
+<<<<<<< HEAD
     gameReady: null,
     users: [],
     bulls: [],
@@ -18,6 +19,14 @@ let state = {
     gameOver: null,
     message: null,
     winners: []
+=======
+  gameReady: null,
+  users: [],
+  bulls: [],
+  guesses: [],
+  gameOver: null,
+  message: null,
+>>>>>>> 9bda6fc (Add login, displaying all guesses)
 };
 
 let callback = null;
@@ -36,12 +45,13 @@ export function ch_join(cb) {
 }
 
 export function ch_login(username, gameName) {
-  // channel = socket.channel(`game:${gameName}`)
-  // channel.join()
-  //   .receive("ok", state_update)
-  //   .receive("error", resp => {
-  //     console.log("Unable to join", resp)
-  //   })
+  channel = socket.channel(`game:${gameName}`, {});
+
+  channel.join()
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to join", resp)
+    })
   channel.push("login", username)
     .receive("ok", state_update)
     .receive("error", resp => {
@@ -60,18 +70,18 @@ export function ch_push(guess) {
 
 export function ch_ready() {
   channel.push("ready", {})
-  .receive("ok", state_update)
-  .receive("error", resp => {
-    console.log("Unable to push", resp)
-  });
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to push", resp)
+    });
 }
 
 export function ch_player(player) {
   channel.push("player", player)
-  .receive("ok", state_update)
-  .receive("error", resp => {
-    console.log("Unable to push", resp)
-  });
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to push", resp)
+    });
 }
 
 export function ch_reset() {
@@ -81,12 +91,6 @@ export function ch_reset() {
       console.log("Unable to push", resp)
     });
 }
-
-channel.join()
-  .receive("ok", state_update)
-  .receive("error", resp => {
-    console.log("Unable to join", resp)
-  })
 
 channel.on("view", state_update);
 

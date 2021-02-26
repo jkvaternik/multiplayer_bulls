@@ -47,9 +47,17 @@ function App(_) {
     message: null,
   });
 
+<<<<<<< HEAD
   useEffect(() => {
     ch_join(setState)
   });
+=======
+  console.log(state)
+
+  // useEffect(() => {
+  //   ch_join(setState)
+  // });
+>>>>>>> 9bda6fc (Add login, displaying all guesses)
 
   function makeGuess(guess) {
     ch_push(guess)
@@ -60,10 +68,15 @@ function App(_) {
   }
 
   function loginHandler(username, gameName) {
+<<<<<<< HEAD
     setUsername({
       name: username, 
       ready: false
     })
+=======
+    setUsername(username)
+    ch_join(setState)
+>>>>>>> 9bda6fc (Add login, displaying all guesses)
     ch_login(username, gameName)
   }
 
