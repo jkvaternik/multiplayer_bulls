@@ -147,15 +147,14 @@ defmodule BullsAndCows.Game do
     cond do
       st.gameOver? ->
         newUsers = Enum.map(st.users, fn uu -> 
-          if Enum.member?(st.winners, uu.username) do 
-            uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins + 1, losses: uu.losses}
-          else 
-            if (uu.player?) do
-              # the weird loss bug is here, can't figure out why its happening
+          if (uu.player?) do
+            !if Enum.member?(st.winners, uu.username) do 
               uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses + 1}
             else 
-              uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses}
+              uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins + 1, losses: uu.losses}
             end
+          else 
+            uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses}
           end
         end)
     
