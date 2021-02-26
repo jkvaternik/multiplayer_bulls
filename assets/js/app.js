@@ -47,6 +47,7 @@ function App(_) {
     message: null,
   });
 
+<<<<<<< HEAD
   function getScores(user) {
     {user.username, user.wins, user.losses}
   }
@@ -56,6 +57,9 @@ function App(_) {
   useEffect(() => {
     ch_join(setState)
   });
+=======
+  console.log(state)
+>>>>>>> 4ba287ea08c7d214e078f1389e0642b3d0809359
 
   function makeGuess(guess) {
     ch_push(guess)
@@ -70,6 +74,7 @@ function App(_) {
       name: username, 
       ready: false
     })
+    ch_join(setState)
     ch_login(username, gameName)
   }
 

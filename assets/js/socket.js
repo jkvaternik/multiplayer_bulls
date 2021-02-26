@@ -7,8 +7,8 @@ let socket = new Socket(
 
 socket.connect()
 
-// Now that you are connected, you can join channels with a topic:
-let channel = socket.channel(`game:1`, {});
+// Now that you are connected, you can join channels with a topic:a
+let channel = socket.channel(`game:lobby`, {});
 
 let state = {
     gameReady: null,
@@ -36,12 +36,13 @@ export function ch_join(cb) {
 }
 
 export function ch_login(username, gameName) {
-  // channel = socket.channel(`game:${gameName}`)
-  // channel.join()
-  //   .receive("ok", state_update)
-  //   .receive("error", resp => {
-  //     console.log("Unable to join", resp)
-  //   })
+  channel = socket.channel(`game:${gameName}`, {});
+
+  channel.join()
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to join", resp)
+    })
   channel.push("login", username)
     .receive("ok", state_update)
     .receive("error", resp => {
@@ -60,18 +61,18 @@ export function ch_push(guess) {
 
 export function ch_ready() {
   channel.push("ready", {})
-  .receive("ok", state_update)
-  .receive("error", resp => {
-    console.log("Unable to push", resp)
-  });
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to push", resp)
+    });
 }
 
 export function ch_player(player) {
   channel.push("player", player)
-  .receive("ok", state_update)
-  .receive("error", resp => {
-    console.log("Unable to push", resp)
-  });
+    .receive("ok", state_update)
+    .receive("error", resp => {
+      console.log("Unable to push", resp)
+    });
 }
 
 export function ch_reset() {
@@ -82,6 +83,7 @@ export function ch_reset() {
     });
 }
 
+<<<<<<< HEAD
 export function ch_leave() {
   channel.push("leave", {})
     .receive("ok", state_update)
@@ -96,6 +98,8 @@ channel.join()
     console.log("Unable to join", resp)
   })
 
+=======
+>>>>>>> 4ba287ea08c7d214e078f1389e0642b3d0809359
 channel.on("view", state_update);
 
 export default socket

@@ -21,6 +21,7 @@ defmodule BullsAndCowsWeb.GameChannel do
 
   @impl true
   def handle_in("login", user, socket) do
+    ## FIXME: Not join as duplicate
     socket = assign(socket, :user, user)
     view = socket.assigns[:name]
     |> GameServer.login(user)
