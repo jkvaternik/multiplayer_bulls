@@ -31,8 +31,8 @@ defmodule BullsAndCows.GameServer do
     GenServer.call(reg(name), {:reset, name})
   end
 
-  def guess(name, number) do
-    GenServer.call(reg(name), {:guess, name, number})
+  def guess(name, username, number) do
+    GenServer.call(reg(name), {:guess, name,  %{username: username, number: number}})
   end
 
   def peek(name) do
@@ -63,13 +63,8 @@ defmodule BullsAndCows.GameServer do
     {:reply, game, game}
   end
 
-<<<<<<< HEAD
   def handle_call({:guess, name, guess}, _from, game) do
     game = Game.guess(game, guess)
-=======
-  def handle_call({:guess, name, number}, _from, game) do
-    game = Game.guess(game, number)
->>>>>>> 108a01589428de7fc108734510fd35f4365863b1
     BackupAgent.put(name, game)
     {:reply, game, game}
   end
@@ -90,8 +85,9 @@ defmodule BullsAndCows.GameServer do
     {:reply, game, game}
   end
 
-  def handle_call({:ready, name}, _from, game) do
-    game = Game.ready(game, name)
+  def handle_call({:ready, name, username}, _from, game) do
+    game = Game.ready(game, username)
+    BackupAgent.put(name, game)
     {:reply, game, game}
   end
 

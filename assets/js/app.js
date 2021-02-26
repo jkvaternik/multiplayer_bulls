@@ -29,7 +29,7 @@ import Message from './components/Message';
 import Controls from './components/Controls';
 
 function App(_) {
-  const [username, setUsername] = useState({name: null, ready: false})
+  const [username, setUsername] = useState("");
 
   const [state, setState] = useState({
     gameName: '',
@@ -48,8 +48,8 @@ function App(_) {
     ch_join(setState)
   });
 
-  function makeGuess(username, guess) {
-    ch_push(username, guess)
+  function makeGuess(guess) {
+    ch_push(guess)
   }
 
   function newGameHandler() {
@@ -57,24 +57,25 @@ function App(_) {
   }
 
   function loginHandler(username, gameName) {
-    setUsername({name: username, ready: false})
+    setUsername(username)
     ch_login(username, gameName)
   }
 
-  function handlePlayerType(username, player) {
-    ch_player(username, player)
+  function handlePlayerType(player) {
+    ch_player(player)
   }
 
-  function handlePlayerReady(username) {
-    ch_ready(username);
+  function handlePlayerReady() {
+    ch_ready();
   }
 
   let body = null;
 
-  if (!username.name) {
+  if (!username) {
     body = <Login login={loginHandler} />
   }
   else {
+    
     if (!state.gameReady) {
       body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={username}/>
      }

@@ -25,17 +25,16 @@ defmodule BullsAndCowsWeb.GameChannel do
     view = socket.assigns[:name]
     |> GameServer.login(user)
     |> Game.view(user)
-    IO.puts(inspect(view))
     {:reply, {:ok, view}, socket}
   end
 
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
   @impl true
-  def handle_in("guess", %{"number" => num}, socket) do
+  def handle_in("guess", num, socket) do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
-    |> GameServer.guess(num)
+    |> GameServer.guess(user, num)
     |> Game.view(user)
     broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
@@ -52,34 +51,32 @@ defmodule BullsAndCowsWeb.GameChannel do
   end
 
   @impl true
-  def handle_in("ready", %{"username" => username}, socket) do
+  def handle_in("ready", socket) do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
-    |> GameServer.ready(username)
+    |> GameServer.ready(user)
     |> Game.view(user)
     {:reply, {:ok, view}, socket}
   end
 
 
-  def handle_in("player", %{"username" => username, "player" => player}, socket) do
+  def handle_in("player", player, socket) do
     user = socket.assigns[:user]
-    IO.puts(inspect("socket"))
-    IO.puts(inspect(GameServer.peek(socket.assigns[:name])))
     view = socket.assigns[:name]
-    |> GameServer.player(username, player)
+    |> GameServer.player(user, player)
     |> Game.view(user)
     {:reply, {:ok, view}, socket}
   end
 
-  intercept ["view"]
+  # intercept ["view"]
 
-  @impl true
-  def handle_out("view", msg, socket) do
-    user = socket.assigns[:user]
-    msg = %{msg | user: user}
-    push(socket, "view", msg)
-    {:noreply, socket}
-  end
+  # @impl true
+  # def handle_out("view", msg, socket) do
+  #   user = socket.assigns[:user]
+  #   msg = %{msg | username: user}
+  #   push(socket, "view", msg)
+  #   {:noreply, socket}
+  # end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do

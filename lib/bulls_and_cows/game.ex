@@ -6,21 +6,21 @@ defmodule BullsAndCows.Game do
       users: [],
       bulls: %{},
       guesses:  %{},
-      gameOver: false,
+      gameOver?: false,
       error?: false
     }
   end
 
   def ready(st, username) do
-    # Where user has name "name", set player to ready and player to true
-    # IO.puts("REady in channel:" + username)
+    e =
+      st.users
+      |> Enum.find(fn u -> u.username === username end)
+
+    newUsers = Enum.filter(st.users, fn u -> u.username !== username end)
+    %{st | users: newUsers ++ [%{username: e.username, player?: e.player?, ready?: !e.ready?}]}
   end
 
   def player(st, user) do
-    IO.puts("helllooooooooo")
-    IO.puts(inspect(user))
-    IO.puts(inspect(st))
-
     e =
       st.users
       |> Enum.find(fn u -> u.username === user.username end)
@@ -69,8 +69,9 @@ defmodule BullsAndCows.Game do
   end
 
   def guess(st, guess) do
-    user = guess.name
-    number = guess.guess
+    user = guess.username
+    number = guess.number
+
     if valid?(number) do
       user_bulls = Map.get(st.bulls, user, [])
       user_guesses = Map.get(st.guesses, user, [])
@@ -79,10 +80,10 @@ defmodule BullsAndCows.Game do
 
       %{
         st
-        | guesses: Map.put(st.guesses, user, [guesses]),
-          bulls: Map.put(st.bulls, user, [user_bulls ++ [bulls]]),
+        | guesses: Map.put(st.guesses, user, guesses),
+          bulls: Map.put(st.bulls, user, user_bulls ++ [bulls]),
           error?: false,
-          gameOver: bulls === "A4B0"
+          gameOver?: bulls === "A4B0"
       }
     end
   end
@@ -116,10 +117,8 @@ defmodule BullsAndCows.Game do
   end
 
   def view(st, user) do
-    IO.puts(inspect(st))
-
     cond do
-      st.gameOver ->
+      st.gameOver? ->
         cond do
           List.last(st.bulls) === "A4B0" ->
             %{
@@ -127,7 +126,7 @@ defmodule BullsAndCows.Game do
               users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
-              gameOver: "Game over. You win! :)"
+              gameOver?: "Game over. You win! :)"
             }
 
           length(st.guesses) === 8 ->
@@ -136,7 +135,7 @@ defmodule BullsAndCows.Game do
               users: st.users,
               bulls: st.bulls,
               guesses: st.guesses,
-              gameOver: "Game over. You lose :("
+              gameOver?: "Game over. You lose :("
             }
         end
 

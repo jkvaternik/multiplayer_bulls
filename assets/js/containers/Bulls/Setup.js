@@ -10,12 +10,12 @@ const Setup = (props) => {
     if (!state.ready) {
       let type = ev.target.value
       setButtonState(type);
-      props.setPlayer(state.name, type == "player")
+      props.setPlayer(type == "player")
     }
   }
 
   if (buttonState === "player") {
-    toggle = (<button className="btn btn-primary" onClick={() => props.playerReady(state.name)}>Ready!</button>)
+    toggle = (<button className="btn btn-primary" onClick={props.playerReady}>Ready!</button>)
   } else {  
     toggle = (<p>Ready</p>)
   }

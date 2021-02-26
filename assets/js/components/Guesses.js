@@ -3,15 +3,21 @@ import React from 'react';
 import Aux from './Aux';
 
 const Guesses = (props) => {
-  const guesses = props.guesses.guesses;
-  const bulls = props.guesses.bull;
+  const guesses = Object.entries(props.guesses.guesses);
+  const bulls = Object.values(props.guesses.bulls);
 
-  const guesses_view = Object.entries(guesses).map(([user, gs]) => gs.map((guess) => {
+  const results = guesses.map(([user, guess]) => guess.map((g, i) => {
+    return {user: user, guesses: guess, bulls: bulls[i]}
+  }))
+
+  console.log(Object.values(results))
+  const guesses_view = Object.values(results).map(([user, gs, bs]) => gs.map((_, i) => {
     return (
-      <Aux key={i}>
-        <p style={{ marginRight: '10px' }}><strong>{i + 1}.</strong></p>
-        <p style={{ marginRight: '10px' }}>{user}:{guess}</p>
-      </Aux>
+            <Aux key={i}>
+              <p style={{ marginRight: '10px' }}><strong>{i + 1}.</strong></p>
+              <p style={{ marginRight: '10px' }}>{user}: {gs[i]}</p>
+              <p style={{ marginRight: '10px' }}>{bs[i]}</p>
+            </Aux>
     )
   }))
 

@@ -48,27 +48,25 @@ export function ch_login(username, gameName) {
     });
 }
 
-export function ch_push(username, guess) {
+export function ch_push(guess) {
   console.log(channel)
-  channel.push("guess", {name: username, guess: guess})
+  channel.push("guess", guess)
     .receive("ok", state_update)
     .receive("error", resp => {
       console.log("Unable to push", resp)
     });
 }
 
-export function ch_ready(username) {
-  channel.push("ready", username)
+export function ch_ready() {
+  channel.push("ready", {})
   .receive("ok", state_update)
   .receive("error", resp => {
     console.log("Unable to push", resp)
   });
 }
 
-export function ch_player(username, player) {
-  console.log("Name: " + username)
-  console.log("Player: " + player)
-  channel.push("player", {username: username, player: player})
+export function ch_player(player) {
+  channel.push("player", player)
   .receive("ok", state_update)
   .receive("error", resp => {
     console.log("Unable to push", resp)
