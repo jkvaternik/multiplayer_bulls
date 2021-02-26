@@ -13,6 +13,16 @@ const Setup = (props) => {
     }
   }
 
+  const user_view = props.users.map((_, j) => {
+    return (
+      <div key={j}>
+        <span style={{marginRight: '10px'}}><strong>{props.users[j].username}.</strong></span>
+        <span style={{marginRight: '10px'}}>Wins: {props.users[j].wins}</span>
+        <span style={{marginRight: '10px'}}>Losses: {props.users[j].losses}</span>
+      </div>
+    )
+  })
+
   if (buttonState === "player") {
     toggle = (<button className="btn btn-primary" onClick={props.playerReady}>Ready!</button>)
   } else {  
@@ -50,9 +60,8 @@ const Setup = (props) => {
 
       {toggle}
 
-      {console.log(props.users)}
       <p>Winners: {props.state}</p>
-      <p>Overall: {props.users}</p>
+      <div>Overall: {user_view}</div>
 
     </section>
   )

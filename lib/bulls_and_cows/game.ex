@@ -63,7 +63,10 @@ defmodule BullsAndCows.Game do
       |> Enum.find(fn u -> u.username === username end)
 
     newUsers = Enum.filter(st.users, fn u -> u.username !== username end)
-    %{st | users: newUsers ++ [%{username: e.username, player?: false, ready?: false, wins: e.wins, losses: e.losses}]}
+    %{st | 
+      guesses: Map.replace(st.guesses, username, []),
+      bulls: Map.replace(st.bulls, username, []),
+      users: newUsers ++ [%{username: e.username, player?: false, ready?: false, wins: e.wins, losses: e.losses}]}
   end
 
   def valid?(number) do
@@ -147,7 +150,11 @@ defmodule BullsAndCows.Game do
           if Enum.member?(st.winners, uu.username) do 
             uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins + 1, losses: uu.losses}
           else 
-            uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses + 1}
+            if (uu.player?) do
+              uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses + 1}
+            else 
+              uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses}
+            end
           end
         end)
     
@@ -170,33 +177,18 @@ defmodule BullsAndCows.Game do
           end)
         end)
         |> Enum.count()) >= 4
+
         if ready && min do 
           %{
             st | 
             gameReady: true,
-            users: st.users,
-            bulls: st.bulls,
-            guesses: st.guesses,
+            winners: []
           }
         else  
-          %{
-            st | 
-            gameReady: false,
-            users: st.users,
-            bulls: st.bulls,
-            guesses: st.guesses,
-          }
+          %{ st | gameReady: false }
         end
 
-      true -> 
-        %{
-          st | 
-          gameReady: st.gameReady,
-          users: st.users,
-          bulls: st.bulls,
-          guesses: st.guesses,
-          #message: nil
-        }
+      true -> st
     end
   end
 end

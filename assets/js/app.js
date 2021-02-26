@@ -47,11 +47,6 @@ function App(_) {
     message: null,
   });
 
-  function getScores(user) {
-    {user.username, user.wins, user.losses}
-  }
-
-  //const userScores = state.users.map(getScores)
 
   useEffect(() => {
     ch_join(setState)
@@ -62,9 +57,10 @@ function App(_) {
     ch_push(guess)
   }
 
+  /*
   function newGameHandler() {
     ch_reset()
-  }
+  }*/
 
   function loginHandler(username, gameName) {
     setUsername({
@@ -95,19 +91,26 @@ function App(_) {
 
   let body = null;
 
+  function getScores(user) {
+    return {username: user.username, wins: user.wins, losses: user.losses}
+  }
+
+  const userScores = state.users.map(getScores)
+  console.log(userScores)
+
   if (!username.name) {
     body = <Login login={loginHandler} />
   }
   else {
     
     if (!state.gameReady) {
-      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={state.winners} username={username}/>
+      body = <Setup playerReady={handlePlayerReady} users={userScores} setPlayer={handlePlayerType} state={state.winners} username={username}/>
      }
     else {
     body = (
       <div>
         <p>Welcome {username.name}</p>
-        <Bulls game={state} leave={leaveGame} guessed={makeGuess} newGame={newGameHandler} />
+        <Bulls game={state} leave={leaveGame} guessed={makeGuess}/>
       </div>
     )
     }
