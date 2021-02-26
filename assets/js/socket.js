@@ -11,7 +11,6 @@ socket.connect()
 let channel = socket.channel(`game:lobby`, {});
 
 let state = {
-<<<<<<< HEAD
     gameReady: null,
     users: [],
     bulls: [],
@@ -19,14 +18,6 @@ let state = {
     gameOver: null,
     message: null,
     winners: []
-=======
-  gameReady: null,
-  users: [],
-  bulls: [],
-  guesses: [],
-  gameOver: null,
-  message: null,
->>>>>>> 9bda6fc (Add login, displaying all guesses)
 };
 
 let callback = null;
