@@ -12,7 +12,7 @@ defmodule BullsAndCowsWeb.GameChannel do
       |> assign(:name, name)
       |> assign(:user, "")
       game = GameServer.peek(name)
-      view = Game.view(game, "")
+      view = Game.view(game)
       {:ok, view, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -25,7 +25,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     socket = assign(socket, :user, user)
     view = socket.assigns[:name]
     |> GameServer.login(user)
-    |> Game.view(user)
+    |> Game.view()
     broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
@@ -37,7 +37,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.guess(user, num)
-    |> Game.view(user)
+    |> Game.view()
     broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
@@ -47,7 +47,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.reset()
-    |> Game.view(user)
+    |> Game.view()
     broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
@@ -57,7 +57,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.leave(user)
-    |> Game.view(user)
+    |> Game.view()
     broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
@@ -65,10 +65,13 @@ defmodule BullsAndCowsWeb.GameChannel do
   @impl true
   def handle_in("ready", _, socket) do
     user = socket.assigns[:user]
-    view = socket.assigns[:name]
+    game = socket.assigns[:name]
     |> GameServer.ready(user)
-    |> Game.view(user)
-    IO.puts(inspect(view))
+
+    if game.gameReady? do
+      GameServer.start_game(game.gamename)
+    end
+    view = Game.view(game)
     broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
@@ -78,7 +81,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.player(user, player)
-    |> Game.view(user)
+    |> Game.view()
     broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
@@ -87,8 +90,7 @@ defmodule BullsAndCowsWeb.GameChannel do
 
   @impl true
   def handle_out("view", msg, socket) do
-    user = socket.assigns[:user]
-    view = Game.view(msg, user)
+    view = Game.view(msg)
     push(socket, "view", view)
     {:noreply, socket}
   end

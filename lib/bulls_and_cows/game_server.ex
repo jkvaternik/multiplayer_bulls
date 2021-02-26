@@ -55,6 +55,10 @@ defmodule BullsAndCows.GameServer do
     GenServer.call(reg(name), {:leave, name, username})
   end
 
+  def start_game(name) do
+    GenServer.call(reg(name), {:show_guesses})
+  end
+
 
   # implementation
 
@@ -80,7 +84,7 @@ defmodule BullsAndCows.GameServer do
   end
 
   def handle_call({:login, name, username}, _from, game) do
-    game = Game.login(game, username)
+    game = Game.login(game, name, username)
     BackupAgent.put(name, game)
     {:reply, game, game}
   end
@@ -102,16 +106,19 @@ defmodule BullsAndCows.GameServer do
     BackupAgent.put(name, game)
     {:reply, game, game}
   end
-  
-  # def handle_info(:pook, game) do
-  #   game = Game.guess(game, %{username: "Jaime", number: "1234"})
-  #   BullsAndCowsWeb.Endpoint.broadcast!(
-  #     "game:1",
-  #     "view",
-  #     Game.view(game, ""))
-  #   {:noreply, game}
 
-  #   Process.send_after(self(), :pook, 15_000)
-  # end
+  def handle_info(:show_guesses, game) do
+    game = Game.
+    BullsAndCowsWeb.Endpoint.broadcast!(
+      game.gamename,
+      "view",
+      Game.view(game))
+    if game.gameReady? do
+      Process.send_after(self(), :show_guesses, 15_000)
+    end
+
+    {:noreply, game}
+
+  end
 
 end

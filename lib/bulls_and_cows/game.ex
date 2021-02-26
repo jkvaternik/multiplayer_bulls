@@ -4,8 +4,6 @@ defmodule BullsAndCows.Game do
       secret: random_secret(),
       gameReady: false,
       users: [],
-      bulls: %{},
-      guesses: %{},
       gameOver?: false,
       error?: false,
       winners: []
@@ -77,15 +75,31 @@ defmodule BullsAndCows.Game do
     end
   end
 
-  def login(st, username) do
+  def login(st, gamename, username) do
     if !Enum.any?(st.users, fn u -> u.username == username end) do
       %{
         st
         | users:
-            st.users ++ [%{username: username, player?: false, ready?: false, wins: 0, losses: 0}]
+            st.users ++
+              [
+                %{
+                  username: username,
+                  player?: false,
+                  ready?: false,
+                  bulls: [],
+                  guesses: [],
+                  turn_guess: "",
+                  wins: 0,
+                  losses: 0
+                }
+              ],
+          gamename: gamename
       }
     else
-      st
+      %{
+        st
+        | gamename: gamename
+      }
     end
   end
 
@@ -95,10 +109,26 @@ defmodule BullsAndCows.Game do
       |> Enum.find(fn u -> u.username === username end)
 
     newUsers = Enum.filter(st.users, fn u -> u.username !== username end)
-    %{st |
-      guesses: Map.replace(st.guesses, username, []),
-      bulls: Map.replace(st.bulls, username, []),
-      users: newUsers ++ [%{username: e.username, player?: false, ready?: false, wins: e.wins, losses: e.losses}]}
+
+    %{
+      st
+      | guesses: Map.replace(st.guesses, username, []),
+        bulls: Map.replace(st.bulls, username, []),
+        users:
+          newUsers ++
+            [
+              %{
+                username: e.username,
+                player?: false,
+                ready?: false,
+                bulls: e.bulls,
+                guesses: e.guesses,
+                turn_guess: "",
+                wins: e.wins,
+                losses: e.losses
+              }
+            ]
+    }
   end
 
   def valid?(number) do
@@ -116,42 +146,40 @@ defmodule BullsAndCows.Game do
     user = guess.username
     number = guess.number
 
-    if number === "" do
-      user_bulls = Map.get(st.bulls, user, [])
-      user_guesses = Map.get(st.guesses, user, [])
+    users = st.users
+    |> Enum.map(fn u ->
+      if u.username === user do
+        %{ user | turn_guess: number}
+      end
+    end)
 
-      %{
-        st
-        | guesses: Map.put(st.guesses, user, user_guesses ++ ["PASS"]),
-          bulls: Map.put(st.bulls, user, user_bulls ++ ["PASS"]),
-          error: false
-      }
-    else
-      if valid?(number) do
-        user_bulls = Map.get(st.bulls, user, [])
-        user_guesses = Map.get(st.guesses, user, [])
-        bulls = bulls_and_cows(st, number)
-        guesses = user_guesses ++ [number]
+    %{st | users: users}
+  end
 
-        if bulls === "A4B0" do
+  def show_guesses(st) do
+    users =
+      st.users
+      |> Enum.map(fn user ->
+        if user.turn_guess === "" do
           %{
-            st
-            | guesses: Map.put(st.guesses, user, guesses),
-              bulls: Map.put(st.bulls, user, user_bulls ++ [bulls]),
-              error?: false,
-              gameOver?: true,
-              winners: st.winners ++ [user]
+            user
+            | guesses: user.guesses ++ ["PASS"],
+              bulls: user.bulls ++ ["PASS"],
+              turn_guess: ""
           }
         else
+          turn_bulls = bulls_and_cows(st, user.turn_guess)
+
           %{
-            st
-            | guesses: Map.put(st.guesses, user, guesses),
-              bulls: Map.put(st.bulls, user, user_bulls ++ [bulls]),
-              error?: false
+            user
+            | guesses: user.guesses ++ [user.turn_guess],
+              bulls: user.bulls ++ [turn_bulls],
+              turn_guess: ""
           }
         end
-      end
-    end
+      end)
+
+    %{st | users: users}
   end
 
   def bulls_and_cows(st, number) do
@@ -182,20 +210,39 @@ defmodule BullsAndCows.Game do
     "A#{elem(bulls_cows, 0)}B#{elem(bulls_cows, 1)}"
   end
 
-  def view(st, user) do
+  def view(st) do
     cond do
       st.gameOver? ->
-        newUsers = Enum.map(st.users, fn uu -> 
-          if (uu.player?) do
-            if !Enum.member?(st.winners, uu.username) do 
-              uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses + 1}
-            else 
-              uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins + 1, losses: uu.losses}
+        newUsers =
+          Enum.map(st.users, fn uu ->
+            if uu.player? do
+              if !Enum.member?(st.winners, uu.username) do
+                uu = %{
+                  username: uu.username,
+                  player?: false,
+                  ready?: false,
+                  wins: uu.wins,
+                  losses: uu.losses + 1
+                }
+              else
+                uu = %{
+                  username: uu.username,
+                  player?: false,
+                  ready?: false,
+                  wins: uu.wins + 1,
+                  losses: uu.losses
+                }
+              end
+            else
+              uu = %{
+                username: uu.username,
+                player?: false,
+                ready?: false,
+                wins: uu.wins,
+                losses: uu.losses
+              }
             end
-          else 
-            uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses}
-          end
-        end)
+          end)
 
         %{
           secret: random_secret(),
@@ -211,25 +258,26 @@ defmodule BullsAndCows.Game do
         ready = true
 
         min =
-          (st.users
+          st.users
           |> Enum.filter(fn uu ->
             if uu.player? do
               ready = uu.ready?
             end
           end)
-          |> Enum.count()) >= 4
+          |> Enum.count() >= 4
 
         if ready && min do
           %{
-            st |
-            gameReady: true,
-            winners: []
+            st
+            | gameReady: true,
+              winners: []
           }
         else
-          %{ st | gameReady: false }
+          %{st | gameReady: false}
         end
 
-      true -> st
+      true ->
+        st
     end
   end
 end
