@@ -18,7 +18,7 @@ import "phoenix_html";
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import { ch_join, ch_login, ch_push, ch_reset, ch_ready, ch_player } from './socket';
+import { ch_join, ch_login, ch_push, ch_reset, ch_ready, ch_player, ch_leave } from './socket';
 
 import Login from './containers/Login';
 import Setup from "./containers/Bulls/Setup";
@@ -46,6 +46,12 @@ function App(_) {
     winners: [],
     message: null,
   });
+
+  function getScores(user) {
+    {user.username, user.wins, user.losses}
+  }
+
+  //const userScores = state.users.map(getScores)
 
   useEffect(() => {
     ch_join(setState)
@@ -75,6 +81,16 @@ function App(_) {
     ch_ready();
   }
 
+  function leaveGame() {
+    // need to update server side state too
+    ch_leave();
+    setUsername({
+      name: null, 
+      player: false,
+      ready: false
+    })
+  }
+
   let body = null;
 
   if (!username.name) {
@@ -89,7 +105,7 @@ function App(_) {
     body = (
       <div>
         <p>Welcome {username.name}</p>
-        <Bulls game={state} guessed={makeGuess} newGame={newGameHandler} />
+        <Bulls game={state} leave={leaveGame} guessed={makeGuess} newGame={newGameHandler} />
       </div>
     )
     }

@@ -50,7 +50,20 @@ defmodule BullsAndCows.Game do
   end
 
   def login(st, username) do
-    %{st | users: st.users ++ [%{username: username, player?: false, ready?: false, wins: 0, losses: 0}]}
+    if !Enum.any?(st.users, fn u -> u.username == username end) do 
+      %{st | users: st.users ++ [%{username: username, player?: false, ready?: false, wins: 0, losses: 0}]}
+    else
+      st
+    end
+  end
+
+  def leave(st, username) do 
+    e =
+      st.users
+      |> Enum.find(fn u -> u.username === username end)
+
+    newUsers = Enum.filter(st.users, fn u -> u.username !== username end)
+    %{st | users: newUsers ++ [%{username: e.username, player?: false, ready?: false, wins: e.wins, losses: e.losses}]}
   end
 
   def valid?(number) do

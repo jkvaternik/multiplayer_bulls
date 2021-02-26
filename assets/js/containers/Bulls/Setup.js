@@ -50,7 +50,7 @@ const Setup = (props) => {
 
       {toggle}
 
-      {console.log(props.state)}
+      {console.log(props.users)}
       <p>Winners: {props.state}</p>
       <p>Overall: {props.users}</p>
 

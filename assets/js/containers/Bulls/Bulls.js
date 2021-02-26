@@ -24,6 +24,7 @@ const Bulls = (props) => {
           guessed={props.guessed} />
         <Guesses guesses={{ guesses: props.game.guesses, bulls: props.game.bulls }} />
       </div>
+      <button onClick={props.leave}>Leave Game</button>
     </section>
   );
 }

@@ -51,6 +51,11 @@ defmodule BullsAndCows.GameServer do
     GenServer.call(reg(name), {:ready, name, user})
   end
 
+  def leave(name, username) do
+    GenServer.call(reg(name), {:leave, name, username})
+  end
+
+
   # implementation
 
   def init(game) do
@@ -87,6 +92,12 @@ defmodule BullsAndCows.GameServer do
 
   def handle_call({:ready, name, username}, _from, game) do
     game = Game.ready(game, username)
+    BackupAgent.put(name, game)
+    {:reply, game, game}
+  end
+
+  def handle_call({:leave, name, username}, _from, game) do
+    game = Game.leave(game, username)
     BackupAgent.put(name, game)
     {:reply, game, game}
   end
