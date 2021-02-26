@@ -211,14 +211,13 @@ defmodule BullsAndCows.Game do
         ready = true
 
         min =
-          st.users
+          (st.users
           |> Enum.filter(fn uu ->
             if uu.player? do
               ready = uu.ready?
             end
           end)
-        end)
-        |> Enum.count()) >= 4
+          |> Enum.count()) >= 4
 
         if ready && min do
           %{
