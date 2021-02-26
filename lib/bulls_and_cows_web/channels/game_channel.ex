@@ -65,8 +65,9 @@ defmodule BullsAndCowsWeb.GameChannel do
   @impl true
   def handle_in("ready", _, socket) do
     user = socket.assigns[:user]
-    game = socket.assigns[:name]
-    |> GameServer.ready(user)
+    name = socket.assigns[:name]
+    game = GameServer.ready(name, user)
+    game = GameServer.game_ready(name)
 
     if game.gameReady do
       GameServer.start_game(game.gamename)

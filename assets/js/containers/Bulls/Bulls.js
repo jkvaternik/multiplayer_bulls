@@ -23,10 +23,10 @@ const Bulls = (props) => {
         <p>
           Welcome to 4digits! A random sequence of 4 unique digits is generated for you to guess. If the matching digits are in their right positions, they are "bulls" (As), if in different positions, they are "cows" (Bs). You have 30 seconds to make a guess for each turn. Good luck!
         </p>
-        <Controls
-          guessed={props.guessed} error={setError}/>
+        {props.user.player ? <Controls
+          guessed={props.guessed} error={setError}/> : null}
         <p>{error}</p>
-        <Guesses guesses={{ guesses: props.game.guesses, bulls: props.game.bulls }} />
+        <Guesses users={props.game.users} />
       </div>
     </section>
   );
