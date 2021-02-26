@@ -54,6 +54,7 @@ defmodule BullsAndCows.GameServer do
   # implementation
 
   def init(game) do
+    Process.send_after(self(), :pook, 10_000)
     {:ok, game}
   end
 
@@ -89,6 +90,14 @@ defmodule BullsAndCows.GameServer do
     game = Game.ready(game, username)
     BackupAgent.put(name, game)
     {:reply, game, game}
+  end
+
+  def handle_info({:pook}, game) do
+    BullsAndCowsWeb.Endpoint.broadcast!(
+      "game:1",
+      "view",
+      Game.view(game, ""))
+    {:noreply, game}
   end
 
 end

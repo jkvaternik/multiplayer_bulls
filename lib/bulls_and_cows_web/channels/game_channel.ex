@@ -35,8 +35,8 @@ defmodule BullsAndCowsWeb.GameChannel do
     user = socket.assigns[:user]
     view = socket.assigns[:name]
     |> GameServer.guess(user, num)
-    |> Game.view(user)
-    broadcast(socket, "view", view)
+    # |> Game.view(user)
+    # broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
