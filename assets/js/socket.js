@@ -83,7 +83,6 @@ export function ch_reset() {
     });
 }
 
-<<<<<<< HEAD
 export function ch_leave() {
   channel.push("leave", {})
     .receive("ok", state_update)
@@ -92,14 +91,6 @@ export function ch_leave() {
     });
 }
 
-channel.join()
-  .receive("ok", state_update)
-  .receive("error", resp => {
-    console.log("Unable to join", resp)
-  })
-
-=======
->>>>>>> 4ba287ea08c7d214e078f1389e0642b3d0809359
 channel.on("view", state_update);
 
 export default socket
