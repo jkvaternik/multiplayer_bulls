@@ -43,6 +43,9 @@ export function ch_login(username, gameName) {
     .receive("error", resp => {
       console.log("Unable to join", resp)
     })
+
+  channel.on("view", state_update);
+
   channel.push("login", username)
     .receive("ok", state_update)
     .receive("error", resp => {
@@ -90,7 +93,5 @@ export function ch_leave() {
       console.log("Unable to push", resp)
     });
 }
-
-channel.on("view", state_update);
 
 export default socket

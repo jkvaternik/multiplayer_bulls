@@ -21,11 +21,12 @@ defmodule BullsAndCowsWeb.GameChannel do
 
   @impl true
   def handle_in("login", user, socket) do
-    ## FIXME: Not join as duplicate
+    ## FIXME : Not join as duplicate
     socket = assign(socket, :user, user)
     view = socket.assigns[:name]
     |> GameServer.login(user)
     |> Game.view(user)
+    broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
@@ -37,7 +38,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     view = socket.assigns[:name]
     |> GameServer.guess(user, num)
     |> Game.view(user)
-    broadcast(socket, "view", view)
+    broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
@@ -47,7 +48,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     view = socket.assigns[:name]
     |> GameServer.reset()
     |> Game.view(user)
-    broadcast(socket, "view", view)
+    broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
@@ -67,7 +68,8 @@ defmodule BullsAndCowsWeb.GameChannel do
     view = socket.assigns[:name]
     |> GameServer.ready(user)
     |> Game.view(user)
-    broadcast(socket, "view", view)
+    IO.puts(inspect(view))
+    broadcast!(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
@@ -77,6 +79,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     view = socket.assigns[:name]
     |> GameServer.player(user, player)
     |> Game.view(user)
+    broadcast(socket, "view", view)
     {:reply, {:ok, view}, socket}
   end
 
@@ -85,8 +88,8 @@ defmodule BullsAndCowsWeb.GameChannel do
   @impl true
   def handle_out("view", msg, socket) do
     user = socket.assigns[:user]
-    #msg = %{msg | username: user}
-    push(socket, "view", msg)
+    view = Game.view(msg, user)
+    push(socket, "view", view)
     {:noreply, socket}
   end
 
