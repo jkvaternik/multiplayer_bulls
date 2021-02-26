@@ -75,18 +75,18 @@ function App(_) {
     body = <Login login={loginHandler} />
   }
   else {
-    
+    /*
     if (!state.gameReady) {
       body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={username}/>
      }
-    else {
+    else {*/
     body = (
       <div>
         <p>Welcome {username.name}</p>
         <Bulls game={state} guessed={makeGuess} newGame={newGameHandler} />
       </div>
     )
-    }
+    //}
   }
 
   // let body = <Setup state={state}/>

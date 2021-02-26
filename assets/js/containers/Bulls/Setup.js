@@ -51,7 +51,6 @@ const Setup = (props) => {
 
       {toggle}
 
-      <p>Other players: </p>
     </section>
   )
 }

@@ -7,7 +7,8 @@ defmodule BullsAndCows.Game do
       bulls: %{},
       guesses:  %{},
       gameOver?: false,
-      error?: false
+      error?: false,
+      winners: [],
     }
   end
 
@@ -17,7 +18,7 @@ defmodule BullsAndCows.Game do
       |> Enum.find(fn u -> u.username === username end)
 
     newUsers = Enum.filter(st.users, fn u -> u.username !== username end)
-    %{st | users: newUsers ++ [%{username: e.username, player?: e.player?, ready?: !e.ready?}]}
+    %{st | users: newUsers ++ [%{username: e.username, player?: e.player?, ready?: !e.ready?, wins: e.wins, losses: e.losses}]}
   end
 
   def player(st, user) do
@@ -26,7 +27,7 @@ defmodule BullsAndCows.Game do
       |> Enum.find(fn u -> u.username === user.username end)
 
     newUsers = Enum.filter(st.users, fn u -> u.username !== user.username end)
-    %{st | users: newUsers ++ [%{username: e.username, player?: user.player, ready?: false}]}
+    %{st | users: newUsers ++ [%{username: e.username, player?: user.player, ready?: false, wins: e.wins, losses: e.losses}]}
   end
 
   def random_secret() do
@@ -49,7 +50,7 @@ defmodule BullsAndCows.Game do
   end
 
   def login(st, username) do
-    %{st | users: st.users ++ [%{username: username, player?: false, ready?: false}]}
+    %{st | users: st.users ++ [%{username: username, player?: false, ready?: false, wins: 0, losses: 0}]}
   end
 
   def valid?(number) do
@@ -77,14 +78,24 @@ defmodule BullsAndCows.Game do
       user_guesses = Map.get(st.guesses, user, [])
       bulls = bulls_and_cows(st, number)
       guesses = user_guesses ++ [number]
-
-      %{
-        st
-        | guesses: Map.put(st.guesses, user, guesses),
-          bulls: Map.put(st.bulls, user, user_bulls ++ [bulls]),
-          error?: false,
-          gameOver?: bulls === "A4B0"
-      }
+      if (bulls === "A4B0") do 
+        %{
+          st
+          | guesses: Map.put(st.guesses, user, guesses),
+            bulls: Map.put(st.bulls, user, user_bulls ++ [bulls]),
+            error?: false,
+            gameOver?: true, 
+            winners: st.winners ++ [user]
+        }
+      else 
+        %{
+          st
+          | guesses: Map.put(st.guesses, user, guesses),
+            bulls: Map.put(st.bulls, user, user_bulls ++ [bulls]),
+            error?: false,
+        }
+      end
+      
     end
   end
 
@@ -119,42 +130,42 @@ defmodule BullsAndCows.Game do
   def view(st, user) do
     cond do
       st.gameOver? ->
-        cond do
-          List.last(st.bulls) === "A4B0" ->
-            %{
-              gameReady: st.gameReady,
-              users: st.users,
-              bulls: st.bulls,
-              guesses: st.guesses,
-              gameOver?: "Game over. You win! :)"
-            }
-
-          length(st.guesses) === 8 ->
-            %{
-              gameReady: st.gameReady,
-              users: st.users,
-              bulls: st.bulls,
-              guesses: st.guesses,
-              gameOver?: "Game over. You lose :("
-            }
-        end
+        newUsers = Enum.map(st.users, fn uu -> 
+          if Enum.member?(st.winners, uu.username) do 
+            uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins + 1, losses: uu.losses}
+          else 
+            uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses + 1}
+          end
+        end)
+    
+        %{
+          secret: random_secret(),
+          gameReady: false,
+          users: newUsers,
+          bulls: %{},
+          guesses:  %{},
+          gameOver?: false,
+          winners: st.winners
+        }
 
       st.error? ->
         %{
+          st | 
           gameReady: st.gameReady,
           users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
-          message: "Guess is not four unique digits. Please try again."
+          #message: "Guess is not four unique digits. Please try again."
         }
 
       true ->
         %{
+          st | 
           gameReady: st.gameReady,
           users: st.users,
           bulls: st.bulls,
           guesses: st.guesses,
-          message: nil
+          #message: nil
         }
     end
   end
