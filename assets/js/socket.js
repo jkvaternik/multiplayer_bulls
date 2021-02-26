@@ -13,8 +13,6 @@ let channel = socket.channel(`game:lobby`, {});
 let state = {
     gameReady: null,
     users: [],
-    bulls: [],
-    guesses: [],
     gameOver: null,
     message: null,
     winners: []

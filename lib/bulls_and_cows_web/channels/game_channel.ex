@@ -68,7 +68,7 @@ defmodule BullsAndCowsWeb.GameChannel do
     game = socket.assigns[:name]
     |> GameServer.ready(user)
 
-    if game.gameReady? do
+    if game.gameReady do
       GameServer.start_game(game.gamename)
     end
     view = Game.view(game)

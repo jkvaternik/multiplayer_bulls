@@ -40,8 +40,6 @@ function App(_) {
     gameReady: true,
     users: [],
     // eventually put this in a game object
-    bulls: [],
-    guesses: [],
     gameOver: null,
     winners: [],
     message: null,

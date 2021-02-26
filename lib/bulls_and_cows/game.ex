@@ -221,6 +221,8 @@ defmodule BullsAndCows.Game do
                   username: uu.username,
                   player?: false,
                   ready?: false,
+                  bulls: [], 
+                  guesses: [],
                   wins: uu.wins,
                   losses: uu.losses + 1
                 }
@@ -229,6 +231,8 @@ defmodule BullsAndCows.Game do
                   username: uu.username,
                   player?: false,
                   ready?: false,
+                  bulls: [], 
+                  guesses: [],
                   wins: uu.wins + 1,
                   losses: uu.losses
                 }
@@ -238,6 +242,8 @@ defmodule BullsAndCows.Game do
                 username: uu.username,
                 player?: false,
                 ready?: false,
+                bulls: [], 
+                guesses: [],
                 wins: uu.wins,
                 losses: uu.losses
               }
@@ -248,9 +254,7 @@ defmodule BullsAndCows.Game do
           secret: random_secret(),
           gameReady: false,
           users: newUsers,
-          bulls: %{},
-          guesses: %{},
-          gameOver?: false,
+          gameOver: false,
           winners: st.winners
         }
 

@@ -113,7 +113,7 @@ defmodule BullsAndCows.GameServer do
       game.gamename,
       "view",
       Game.view(game))
-    if game.gameReady? do
+    if game.gameReady do
       Process.send_after(self(), :show_guesses, 15_000)
     end
 
