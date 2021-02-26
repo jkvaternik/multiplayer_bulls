@@ -55,7 +55,18 @@ const Controls = (props) => {
         value={text}
         onChange={updateGuess}
         onKeyPress={keypress}></input>
-      <button id="enter" onClick={enter}>OK</button>
+      <button
+        id="enter"
+        style={{ marginRight: '15px' }}
+        onClick={enter}>
+        OK
+      </button>
+      <button
+        id="pass"
+        style={{ backgroundColor: 'salmon', borderColor: 'salmon' }}
+        onClick={() => { props.guessed(''); setText('') }}>
+        PASS
+      </button>
     </Aux>
   )
 }
