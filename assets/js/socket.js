@@ -17,6 +17,7 @@ let state = {
     guesses: [],
     gameOver: null,
     message: null,
+    winners: []
 };
 
 let callback = null;

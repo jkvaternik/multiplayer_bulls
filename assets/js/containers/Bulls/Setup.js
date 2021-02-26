@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 
 const Setup = (props) => {
 
-  const [state, setState] = useState(props.state);
   const [buttonState, setButtonState] = useState("observer");
   let toggle = null;
 
   function handleButtonChange(ev) {
-    if (!state.ready) {
+    if (!props.username.ready) {
       let type = ev.target.value
       setButtonState(type);
       props.setPlayer(type == "player")
@@ -50,6 +49,10 @@ const Setup = (props) => {
         </div>
 
       {toggle}
+
+      {console.log(props.state)}
+      <p>Winners: {props.state}</p>
+      <p>Overall: {props.users}</p>
 
     </section>
   )

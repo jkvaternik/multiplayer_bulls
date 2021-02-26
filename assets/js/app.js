@@ -29,20 +29,23 @@ import Message from './components/Message';
 import Controls from './components/Controls';
 
 function App(_) {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState({
+    name: null, 
+    player: false,
+    ready: false
+  });
 
   const [state, setState] = useState({
     gameName: '',
-    gameReady: null,
+    gameReady: true,
     users: [],
     // eventually put this in a game object
     bulls: [],
     guesses: [],
     gameOver: null,
+    winners: [],
     message: null,
   });
-
-  console.log(state)
 
   useEffect(() => {
     ch_join(setState)
@@ -57,7 +60,10 @@ function App(_) {
   }
 
   function loginHandler(username, gameName) {
-    setUsername(username)
+    setUsername({
+      name: username, 
+      ready: false
+    })
     ch_login(username, gameName)
   }
 
@@ -71,22 +77,22 @@ function App(_) {
 
   let body = null;
 
-  if (!username) {
+  if (!username.name) {
     body = <Login login={loginHandler} />
   }
   else {
-    /*
+    
     if (!state.gameReady) {
-      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={username}/>
+      body = <Setup playerReady={handlePlayerReady} setPlayer={handlePlayerType} state={state.winners} username={username}/>
      }
-    else {*/
+    else {
     body = (
       <div>
         <p>Welcome {username.name}</p>
         <Bulls game={state} guessed={makeGuess} newGame={newGameHandler} />
       </div>
     )
-    //}
+    }
   }
 
   // let body = <Setup state={state}/>

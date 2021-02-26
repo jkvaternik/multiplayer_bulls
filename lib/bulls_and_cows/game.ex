@@ -148,17 +148,34 @@ defmodule BullsAndCows.Game do
           winners: st.winners
         }
 
-      st.error? ->
-        %{
-          st | 
-          gameReady: st.gameReady,
-          users: st.users,
-          bulls: st.bulls,
-          guesses: st.guesses,
-          #message: "Guess is not four unique digits. Please try again."
-        }
+      !st.gameReady ->
+        ready = true
+        min = (st.users
+        |> Enum.filter(fn uu -> (
+          if uu.player? do 
+            ready = uu.ready? 
+          end)
+        end)
+        |> Enum.count()) >= 4
+        if ready && min do 
+          %{
+            st | 
+            gameReady: true,
+            users: st.users,
+            bulls: st.bulls,
+            guesses: st.guesses,
+          }
+        else  
+          %{
+            st | 
+            gameReady: false,
+            users: st.users,
+            bulls: st.bulls,
+            guesses: st.guesses,
+          }
+        end
 
-      true ->
+      true -> 
         %{
           st | 
           gameReady: st.gameReady,
