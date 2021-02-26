@@ -21,7 +21,7 @@ const Bulls = (props) => {
       <button onClick={props.leave}>Leave Game</button>
       <div style={{ float: 'clear' }}>
         <p>
-          Welcome to 4digits! A random sequence of 4 unique digits is generated for you to guess. If the matching digits are in their right positions, they are "bulls" (As), if in different positions, they are "cows" (Bs). You have 8 attempts to guess the number. Good luck!
+          Welcome to 4digits! A random sequence of 4 unique digits is generated for you to guess. If the matching digits are in their right positions, they are "bulls" (As), if in different positions, they are "cows" (Bs). You have 30 seconds to make a guess for each turn. Good luck!
         </p>
         <Controls
           guessed={props.guessed} error={setError}/>

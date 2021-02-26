@@ -80,7 +80,6 @@ function App(_) {
   }
 
   function leaveGame() {
-    // need to update server side state too
     ch_leave();
     setUsername({
       name: null, 
@@ -96,7 +95,6 @@ function App(_) {
   }
 
   const userScores = state.users.map(getScores)
-  console.log(userScores)
 
   if (!username.name) {
     body = <Login login={loginHandler} />
@@ -106,16 +104,14 @@ function App(_) {
       body = <Setup playerReady={handlePlayerReady} users={userScores} setPlayer={handlePlayerType} state={state.winners} username={username}/>
      }
     else {
-    body = (
-      <div>
-        <p>Welcome {username.name}</p>
-        <Bulls game={state} leave={leaveGame} guessed={makeGuess}/>
-      </div>
-    )
+      body = (
+        <div>
+          <p>Welcome {username.name}</p>
+          <Bulls game={state} leave={leaveGame} guessed={makeGuess}/>
+        </div>
+      )
     }
   }
-
-  // let body = <Setup state={state}/>
 
   return body;
 }

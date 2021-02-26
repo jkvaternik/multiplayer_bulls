@@ -18,6 +18,11 @@ const Controls = (props) => {
     }
   }
 
+  // determines whether or not all the digits in a number are unique
+  function areDigitsUnique(x) {
+    return (new Set(x.toString().split(''))).size === x.length;
+  }
+
   function updateGuess(ev) {
     let text = ev.target.value;
     if (text.length > 4) {
@@ -28,7 +33,7 @@ const Controls = (props) => {
 
   function enter() {
     let e = getError(text);
-    if (getError(e) == "") {
+    if (e === "") {
       props.guessed(text); 
       setText('');
     } else {

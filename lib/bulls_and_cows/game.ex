@@ -151,6 +151,7 @@ defmodule BullsAndCows.Game do
             uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins + 1, losses: uu.losses}
           else 
             if (uu.player?) do
+              # the weird loss bug is here, can't figure out why its happening
               uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses + 1}
             else 
               uu = %{username: uu.username, player?: false, ready?: false, wins: uu.wins, losses: uu.losses}
