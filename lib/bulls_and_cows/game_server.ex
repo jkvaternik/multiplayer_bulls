@@ -118,7 +118,7 @@ defmodule BullsAndCows.GameServer do
 
   def handle_call({:show_guesses, name}, _from, game) do
     BackupAgent.put(name, game)
-    Process.send_after(self(), {:show_guesses, name}, 15_000)
+    Process.send_after(self(), {:show_guesses, name}, 30_000)
     {:reply, game, game}
   end
 
@@ -132,7 +132,7 @@ defmodule BullsAndCows.GameServer do
       "view",
       view)
     if game.gameReady do
-      Process.send_after(self(), {:show_guesses, name}, 15_000)
+      Process.send_after(self(), {:show_guesses, name}, 30_000)
     end
     {:noreply, game}
   end
