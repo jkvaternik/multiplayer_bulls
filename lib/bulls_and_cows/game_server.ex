@@ -124,7 +124,7 @@ defmodule BullsAndCows.GameServer do
 
   def handle_info({:show_guesses, name}, game) do
     game = Game.show_guesses(game)
-    |> Game.view()
+    #|> Game.view()
     view = Game.view(game)
 
     BullsAndCowsWeb.Endpoint.broadcast!(

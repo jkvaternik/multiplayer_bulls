@@ -198,7 +198,7 @@ defmodule BullsAndCows.Game do
     if Enum.count(winners) > 0 do 
       ws = (winners 
       |> Enum.map(fn user -> user.username end))
-      %{st | gameOver: true, users: users, winners: ws}
+      %{st | secret: random_secret(), gameOver: true, users: users, winners: ws}
     else 
       %{st | users: users }
     end
@@ -259,32 +259,9 @@ defmodule BullsAndCows.Game do
     cond do
       st.gameOver ->
         newUsers =
-          Enum.map(st.users, fn uu ->
-            if uu.player do
-              if !Enum.member?(st.winners, uu.username) do
-                uu = %{
-                  username: uu.username,
-                  player: false,
-                  ready: false,
-                  bulls: [],
-                  guesses: [],
-                  turn_guess: "",
-                  wins: uu.wins,
-                  losses: uu.losses + 1
-                }
-              else
-                uu = %{
-                  username: uu.username,
-                  player: false,
-                  ready: false,
-                  bulls: [],
-                  guesses: [],
-                  turn_guess: "",
-                  wins: uu.wins + 1,
-                  losses: uu.losses
-                }
-              end
-            else
+        Enum.map(st.users, fn uu ->
+          if uu.player do
+            if !Enum.member?(st.winners, uu.username) do
               uu = %{
                 username: uu.username,
                 player: false,
@@ -293,21 +270,50 @@ defmodule BullsAndCows.Game do
                 guesses: [],
                 turn_guess: "",
                 wins: uu.wins,
+                losses: uu.losses + 1
+              }
+            else
+              uu = %{
+                username: uu.username,
+                player: false,
+                ready: false,
+                bulls: [],
+                guesses: [],
+                turn_guess: "",
+                wins: uu.wins + 1,
                 losses: uu.losses
               }
             end
-          end)
+          else
+            uu = %{
+              username: uu.username,
+              player: false,
+              ready: false,
+              bulls: [],
+              guesses: [],
+              turn_guess: "",
+              wins: uu.wins,
+              losses: uu.losses
+            }
+          end
+        end)
 
-        %{
-          secret: random_secret(),
-          gameReady: false,
-          users: newUsers,
-          gameOver: false,
-          winners: st.winners
-        }
+      %{
+        gameReady: false,
+        gamename: st.gamename,
+        users: newUsers,
+        gameOver: false,
+        winners: st.winners
+      }
 
       true ->
-        st
+        %{
+          gameReady: st.gameReady,
+          gamename: st.gamename,
+          users: st.users,
+          gameOver: st.gameOver,
+          winners: st.winners
+        }
     end
   end
 end
