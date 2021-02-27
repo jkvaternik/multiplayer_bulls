@@ -124,12 +124,13 @@ defmodule BullsAndCows.GameServer do
 
   def handle_info({:show_guesses, name}, game) do
     game = Game.show_guesses(game)
-    BackupAgent.put(name, game)
+    |> Game.view()
+    view = Game.view(game)
+
     BullsAndCowsWeb.Endpoint.broadcast!(
-      name,
+      "game:" <> game.gamename,
       "view",
-      Game.view(game))
-      IO.puts(inspect(Game.view(game)))
+      view)
     if game.gameReady do
       Process.send_after(self(), {:show_guesses, name}, 15_000)
     end

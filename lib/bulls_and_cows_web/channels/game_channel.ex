@@ -87,15 +87,6 @@ defmodule BullsAndCowsWeb.GameChannel do
     {:reply, {:ok, view}, socket}
   end
 
-  intercept ["view"]
-
-  @impl true
-  def handle_out("view", msg, socket) do
-    view = Game.view(msg)
-    push(socket, "view", view)
-    {:noreply, socket}
-  end
-
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
