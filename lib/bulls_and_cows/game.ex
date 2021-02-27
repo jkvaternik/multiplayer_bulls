@@ -164,6 +164,10 @@ defmodule BullsAndCows.Game do
     %{st | users: users}
   end
 
+  @spec show_guesses(%{:users => any, optional(any) => any}) :: %{
+          :users => list,
+          optional(any) => any
+        }
   def show_guesses(st) do
     users =
       st.users
