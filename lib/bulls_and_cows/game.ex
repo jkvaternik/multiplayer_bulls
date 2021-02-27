@@ -198,8 +198,6 @@ defmodule BullsAndCows.Game do
     else 
       %{st | users: users }
     end
-
-    
   end
 
   def bulls_and_cows(st, number) do
