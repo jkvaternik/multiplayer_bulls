@@ -1,0 +1,15 @@
+[Unit]
+Description=HW06 Multiplayer Bulls and Cows
+
+[Service]
+Type=simple
+User=mpbulls
+Group=mpbulls
+Restart=on-failure
+Environment=LANG=en_US.UTF-8
+
+WorkingDirectory=/home/mpbulls/multiplayer_bulls/
+ExecStart=/bin/bash /home/mpbulls/multiplayer_bulls/start.sh
+
+[Install]
+WantedBy=multi-user.target
