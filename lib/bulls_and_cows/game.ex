@@ -119,17 +119,15 @@ defmodule BullsAndCows.Game do
 
     %{
       st
-      | guesses: Map.replace(st.guesses, username, []),
-        bulls: Map.replace(st.bulls, username, []),
-        users:
+      | users:
           newUsers ++
             [
               %{
                 username: e.username,
                 player: false,
                 ready: false,
-                bulls: e.bulls,
-                guesses: e.guesses,
+                bulls: [],
+                guesses: [],
                 turn_guess: "",
                 wins: e.wins,
                 losses: e.losses
@@ -180,7 +178,6 @@ defmodule BullsAndCows.Game do
         else
           if valid?(user.turn_guess) do
             turn_bulls = bulls_and_cows(st, user.turn_guess)
-
             %{
               user
               | guesses: user.guesses ++ [user.turn_guess],
@@ -192,8 +189,17 @@ defmodule BullsAndCows.Game do
           end
         end
       end)
+    
+    winners = Enum.filter(users, fn user -> Enum.member?(user.bulls, "A4B0") end)
+    if Enum.count(winners) > 0 do 
+      ws = (winners 
+      |> Enum.map(fn user -> user.username end))
+      %{st | gameOver: true, users: users, winners: ws}
+    else 
+      %{st | users: users }
+    end
 
-    %{st | users: users}
+    
   end
 
   def bulls_and_cows(st, number) do
