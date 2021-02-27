@@ -35,7 +35,7 @@ const Controls = (props) => {
     let e = getError(text);
     if (e === "") {
       props.guessed(text); 
-      props.error("");
+      props.error(null);
       setText('');
     } else {
       props.error(e);

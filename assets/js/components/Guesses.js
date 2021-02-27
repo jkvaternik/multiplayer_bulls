@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Aux from './Aux';
-
 const Guesses = (props) => {
   const guesses_view = props.users.map((obj) => {
     if (obj.player) {

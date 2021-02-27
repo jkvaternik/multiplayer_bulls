@@ -30,7 +30,7 @@ import Controls from './components/Controls';
 
 function App(_) {
   const [username, setUsername] = useState({
-    name: null, 
+    name: null,
     player: false,
     ready: false
   });
@@ -61,7 +61,7 @@ function App(_) {
 
   function loginHandler(username, gameName) {
     setUsername({
-      name: username, 
+      name: username,
       ready: false
     })
     ch_join(setState)
@@ -79,6 +79,7 @@ function App(_) {
   function handlePlayerReady() {
     setUsername({
       ...username,
+      ready: !username.ready
     })
     ch_ready();
   }
@@ -86,35 +87,38 @@ function App(_) {
   function leaveGame() {
     ch_leave();
     setUsername({
-      name: null, 
+      name: null,
       player: false,
       ready: false
     })
   }
 
-  console.log(state);
-
   let body = null;
 
   function getScores(user) {
-    return {username: user.username, wins: user.wins, losses: user.losses}
+    return { username: user.username, wins: user.wins, losses: user.losses }
   }
 
   const userScores = state.users.map(getScores)
+ 
 
   if (!username.name) {
     body = <Login login={loginHandler} />
   }
   else {
     if (!state.gameReady) {
-      body = <Setup playerReady={handlePlayerReady} users={userScores} setPlayer={handlePlayerType} state={state.winners} username={username}/>
-     }
+      body = 
+        <Setup 
+          playerReady={handlePlayerReady} 
+          users={userScores} 
+          setPlayer={handlePlayerType} 
+          state={state.winners} 
+          username={username}
+          />
+    }
     else {
       body = (
-        <div>
-          <p>Welcome {username.name}</p>
-          <Bulls game={state} user={username} leave={leaveGame} guessed={makeGuess}/>
-        </div>
+        <Bulls game={state} user={username} leave={leaveGame} guessed={makeGuess} />
       )
     }
   }
